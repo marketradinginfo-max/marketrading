@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>Marketrading - Profile</title>
+
+<link
+rel="stylesheet"
+href="profile.css"
+>
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
+
+</head>
+
+
+<body>
+
+
+<!-- ================================
+SIDEBAR
+================================= -->
+
+<aside class="sidebar">
+
+<div class="logo">
+<h2>Marketrading</h2>
+</div>
+
+
+<nav>
+
+<ul class="menu">
+
+<li>
+<a href="dashboard.html">
+<i class="fa-solid fa-chart-line"></i>
+<span>Dashboard</span>
+</a>
+</li>
+
+
+<li>
+<a href="deposit.html">
+<i class="fa-solid fa-wallet"></i>
+<span>Deposit</span>
+</a>
+</li>
+
+
+<li>
+<a href="withdraw.html">
+<i class="fa-solid fa-money-bill-transfer"></i>
+<span>Withdraw</span>
+</a>
+</li>
+
+
+<li>
+<a href="markets.html">
+<i class="fa-solid fa-chart-column"></i>
+<span>Markets</span>
+</a>
+</li>
+
+
+<li>
+<a href="investment-plans.html">
+<i class="fa-solid fa-layer-group"></i>
+<span>Investment Plans</span>
+</a>
+</li>
+
+
+<li>
+<a href="transactions.html">
+<i class="fa-solid fa-clock-rotate-left"></i>
+<span>Transactions</span>
+</a>
+</li>
+
+
+<li class="active">
+<a href="profile.html">
+<i class="fa-solid fa-user"></i>
+<span>Profile</span>
+</a>
+</li>
+
+
+<li>
+<a href="settings.html">
+<i class="fa-solid fa-gear"></i>
+<span>Settings</span>
+</a>
+</li>
+
+
+<li>
+<a href="#" id="logoutButton">
+<i class="fa-solid fa-right-from-bracket"></i>
+<span>Logout</span>
+</a>
+</li>
+
+</ul>
+
+</nav>
+
+</aside>
+
+
+
+<!-- ================================
+MAIN CONTENT
+================================= -->
+
+<main class="main">
+
+
+<!-- TOP BAR -->
+
+<header class="topbar">
+
+<div class="page-title">
+
+<h1>My Profile</h1>
+
+<p>
+Manage your Marketrading account
+</p>
+
+</div>
+
+
+<div class="top-user">
+
+<img
+id="topProfileImage"
+src="images/default-avatar.jpg"
+alt="Profile"
+>
+
+<span id="topUserName">
+Investor
+</span>
+
+</div>
+
+</header>
+
+
+
+<!-- ================================
+PROFILE AREA
+================================= -->
+
+<section class="profile-grid">
+
+
+<!-- PROFILE PHOTO CARD -->
+
+<div class="card avatar-card">
+
+<h2>Profile Picture</h2>
+
+<div class="avatar-area">
+
+
+<div class="avatar-wrapper">
+
+<img
+id="profileImage"
+src="images/default-avatar.jpg"
+alt="Profile Picture"
+class="profile-avatar"
+>
+
+
+<label
+for="avatarInput"
+class="camera-button"
+title="Change profile picture"
+>
+
+<i class="fa-solid fa-camera"></i>
+
+</label>
+
+</div>
+
+
+<input
+type="file"
+id="avatarInput"
+accept="image/png,image/jpeg,image/jpg,image/webp"
+hidden
+>
+
+
+<h3>
+Profile Photo
+</h3>
+
+
+<p>
+Click the camera icon to choose a new picture.
+</p>
+
+
+<small>
+JPG, PNG or WEBP · Maximum 5MB
+</small>
+
+</div>
+
+</div>
+
+
+
+<!-- PERSONAL INFORMATION CARD -->
+
+<div class="card information-card">
+
+<h2>Personal Information</h2>
+
+
+<form id="profileForm">
+
+
+<!-- FULL NAME -->
+
+<div class="form-group">
+
+<label for="fullname">
+Full Name
+</label>
+
+
+<div class="input-wrapper">
+
+<i class="fa-solid fa-user"></i>
+
+<input
+type="text"
+id="fullname"
+name="fullname"
+placeholder="Enter your full name"
+autocomplete="name"
+>
+
+</div>
+
+</div>
+
+
+
+<!-- USERNAME -->
+
+<div class="form-group">
+
+<label for="username">
+Username
+</label>
+
+
+<div class="input-wrapper">
+
+<i class="fa-solid fa-at"></i>
+
+<input
+type="text"
+id="username"
+name="username"
+placeholder="Enter your username"
+autocomplete="username"
+>
+
+</div>
+
+</div>
+
+
+
+<!-- EMAIL -->
+
+<div class="form-group">
+
+<label for="email">
+Email Address
+</label>
+
+
+<div class="input-wrapper">
+
+<i class="fa-solid fa-envelope"></i>
+
+<input
+type="email"
+id="email"
+name="email"
+placeholder="Email address"
+readonly
+>
+
+</div>
+
+
+<small class="field-note">
+Your email address cannot be changed here.
+</small>
+
+</div>
+
+
+
+<!-- PHONE -->
+
+<div class="form-group">
+
+<label for="phone">
+Phone Number
+</label>
+
+
+<div class="input-wrapper">
+
+<i class="fa-solid fa-phone"></i>
+
+<input
+type="tel"
+id="phone"
+name="phone"
+placeholder="Enter your phone number"
+autocomplete="tel"
+>
+
+</div>
+
+</div>
+
+
+
+<!-- SAVE -->
+
+<button
+type="submit"
+class="save-button"
+>
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Save Changes
+
+</button>
+
+
+</form>
+
+</div>
+
+</section>
+
+
+
+<!-- ================================
+ACCOUNT INFORMATION
+================================= -->
+
+<section class="card account-card">
+
+<h2>Account Information</h2>
+
+
+<div class="account-row">
+
+<span>
+Account Status
+</span>
+
+<strong class="active-status">
+<i class="fa-solid fa-circle"></i>
+Active
+</strong>
+
+</div>
+
+
+<div class="account-row">
+
+<span>
+Account Type
+</span>
+
+<strong>
+Investor Account
+</strong>
+
+</div>
+
+
+</section>
+
+
+</main>
+
+
+
+<!-- ================================
+JAVASCRIPT
+================================= -->
+
+<script
+src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script src="supabase.js"></script>
+
+
+<script src="profile.js"></script>
+
+
+</body>
+
+</html>

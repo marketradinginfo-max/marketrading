@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketrading</title>
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+    --bg:#07111f;
+    --panel:#0d1a2b;
+    --panel2:#101f33;
+    --line:rgba(148,163,184,.14);
+    --muted:#8fa4bc;
+    --gold:#fbbf24;
+    --green:#22c55e;
+    --red:#ef4444;
+}
+
+html{scroll-behavior:smooth}
+body{
+    background:var(--bg);
+    color:#fff;
+    overflow-x:hidden;
+}
+.nav-glass{
+    background:rgba(7,17,31,.88);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);
+}
+.hero{
+    position:relative;
+    min-height:690px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 78% 30%,rgba(37,99,235,.28),transparent 34%),
+      radial-gradient(circle at 20% 70%,rgba(16,185,129,.10),transparent 30%),
+      linear-gradient(135deg,#07111f 0%,#0b1830 52%,#06101d 100%);
+}
+.hero-grid{
+    position:absolute;
+    inset:0;
+    opacity:.24;
+    background-image:
+      linear-gradient(rgba(148,163,184,.09) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(148,163,184,.09) 1px,transparent 1px);
+    background-size:52px 52px;
+    mask-image:linear-gradient(to bottom,black,transparent 90%);
+}
+.glow{
+    position:absolute;
+    width:420px;height:420px;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.18;
+    animation:floatGlow 8s ease-in-out infinite;
+}
+.glow.one{background:#2563eb;right:8%;top:8%}
+.glow.two{background:#22c55e;left:4%;bottom:-20%;animation-delay:-3s}
+@keyframes floatGlow{
+    0%,100%{transform:translate3d(0,0,0) scale(1)}
+    50%{transform:translate3d(25px,-20px,0) scale(1.08)}
+}
+
+.market-ticker{
+    background:#050c16;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+}
+.ticker-track{
+    display:flex;
+    width:max-content;
+    animation:tickerMove 34s linear infinite;
+}
+@keyframes tickerMove{
+    from{transform:translateX(0)}
+    to{transform:translateX(-50%)}
+}
+.ticker-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:190px;
+    padding:11px 22px;
+    border-right:1px solid var(--line);
+    font-size:13px;
+}
+.up{color:var(--green)}
+.down{color:var(--red)}
+
+.trading-card{
+    position:relative;
+    background:linear-gradient(145deg,rgba(16,31,51,.96),rgba(7,17,31,.94));
+    border:1px solid rgba(148,163,184,.17);
+    box-shadow:0 30px 80px rgba(0,0,0,.35);
+    border-radius:24px;
+    overflow:hidden;
+    transform:perspective(1200px) rotateY(-4deg);
+    animation:cardFloat 6s ease-in-out infinite;
+}
+@keyframes cardFloat{
+    0%,100%{transform:perspective(1200px) rotateY(-4deg) translateY(0)}
+    50%{transform:perspective(1200px) rotateY(-1deg) translateY(-10px)}
+}
+.chart{
+    position:relative;
+    height:220px;
+    overflow:hidden;
+    background:
+      linear-gradient(rgba(148,163,184,.06) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(148,163,184,.06) 1px,transparent 1px);
+    background-size:44px 44px;
+}
+.chart svg{
+    position:absolute;
+    width:130%;
+    height:100%;
+    left:-15%;
+}
+.chart-line{
+    fill:none;
+    stroke:#22c55e;
+    stroke-width:4;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:1200;
+    stroke-dashoffset:1200;
+    animation:drawChart 5s ease-out forwards,chartPulse 4s ease-in-out 5s infinite;
+    filter:drop-shadow(0 0 8px rgba(34,197,94,.35));
+}
+@keyframes drawChart{to{stroke-dashoffset:0}}
+@keyframes chartPulse{
+    0%,100%{transform:translateX(0)}
+    50%{transform:translateX(-18px)}
+}
+.candle{
+    position:absolute;
+    bottom:35px;
+    width:7px;
+    border-radius:2px;
+    animation:candlePulse 2.4s ease-in-out infinite;
+}
+.candle:before{
+    content:"";
+    position:absolute;
+    left:2px;
+    top:-15px;
+    width:3px;
+    height:calc(100% + 30px);
+    background:currentColor;
+}
+.candle.green{color:#22c55e;background:#22c55e}
+.candle.red{color:#ef4444;background:#ef4444}
+@keyframes candlePulse{
+    0%,100%{transform:scaleY(1)}
+    50%{transform:scaleY(1.18)}
+}
+
+.stat-pill{
+    background:rgba(255,255,255,.055);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px 14px;
+}
+.live-dot{
+    width:8px;height:8px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 0 0 rgba(34,197,94,.6);
+    animation:pulseDot 1.8s infinite;
+}
+@keyframes pulseDot{
+    70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}
+    100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+}
+
+.asset-card{
+    background:linear-gradient(145deg,#0d1a2b,#091523);
+    border:1px solid var(--line);
+    transition:.3s ease;
+}
+.asset-card:hover{
+    transform:translateY(-8px);
+    border-color:rgba(251,191,36,.35);
+    box-shadow:0 20px 45px rgba(0,0,0,.28);
+}
+.asset-icon{
+    width:48px;height:48px;
+    display:grid;place-items:center;
+    border-radius:14px;
+    background:rgba(251,191,36,.11);
+    color:var(--gold);
+}
+.btn-main{
+    transition:.25s ease;
+    box-shadow:0 10px 28px rgba(251,191,36,.18);
+}
+.btn-main:hover{
+    transform:translateY(-2px);
+    box-shadow:0 16px 35px rgba(251,191,36,.28);
+}
+.section-title span{color:var(--gold)}
+.mobile-open{left:0!important}
+
+@media(max-width:767px){
+    .hero{min-height:auto}
+    .trading-card{transform:none}
+    .hero h2{font-size:2.7rem;line-height:1.05}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LIVE-STYLE DEMO MARKET TICKER -->
+<div class="market-ticker">
+    <div class="ticker-track" id="tickerTrack">
+        <div class="ticker-item"><b>GOLD</b><span id="goldPrice">$2,438.20</span><span class="up">▲ 1.24%</span></div>
+        <div class="ticker-item"><b>BTC/USD</b><span id="btcPrice">$118,420</span><span class="up">▲ 2.18%</span></div>
+        <div class="ticker-item"><b>EUR/USD</b><span id="eurPrice">1.1684</span><span class="up">▲ 0.42%</span></div>
+        <div class="ticker-item"><b>SILVER</b><span>$27.84</span><span class="down">▼ 0.31%</span></div>
+        <div class="ticker-item"><b>NASDAQ</b><span>23,842.10</span><span class="up">▲ 0.76%</span></div>
+        <div class="ticker-item"><b>OIL</b><span>$68.42</span><span class="up">▲ 0.58%</span></div>
+
+        <!-- duplicate for seamless ticker -->
+        <div class="ticker-item"><b>GOLD</b><span>$2,438.20</span><span class="up">▲ 1.24%</span></div>
+        <div class="ticker-item"><b>BTC/USD</b><span>$118,420</span><span class="up">▲ 2.18%</span></div>
+        <div class="ticker-item"><b>EUR/USD</b><span>1.1684</span><span class="up">▲ 0.42%</span></div>
+        <div class="ticker-item"><b>SILVER</b><span>$27.84</span><span class="down">▼ 0.31%</span></div>
+        <div class="ticker-item"><b>NASDAQ</b><span>23,842.10</span><span class="up">▲ 0.76%</span></div>
+        <div class="ticker-item"><b>OIL</b><span>$68.42</span><span class="up">▲ 0.58%</span></div>
+    </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="nav-glass sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between h-20">
+            <a href="index.html" class="text-3xl font-bold text-yellow-400">
+                Marketrading
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-white hover:text-yellow-400 transition">Home</a>
+                <a href="markets.html" class="text-gray-300 hover:text-yellow-400 transition">Markets</a>
+                <a href="investment-plans.html" class="text-gray-300 hover:text-yellow-400 transition">Invest</a>
+                <a href="#about" class="text-gray-300 hover:text-yellow-400 transition">About</a>
+                <a href="login.html" class="bg-yellow-500 text-black px-5 py-2.5 rounded-lg font-semibold btn-main">Login</a>
+            </div>
+
+            <button id="menuBtn" class="md:hidden text-3xl text-white" type="button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu"
+     class="fixed top-0 left-[-100%] w-72 h-full bg-slate-950 border-r border-slate-800 transition-all duration-300 z-[60]">
+
+    <div class="p-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-yellow-400 text-2xl font-bold">Marketrading</h2>
+            <button id="closeMenu" type="button">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+
+        <ul class="mt-10 space-y-6 text-lg">
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="markets.html">📈 Markets</a></li>
+            <li><a href="investment-plans.html">💰 Invest</a></li>
+            <li><a href="#about">ℹ About</a></li>
+            <li>
+                <a href="login.html"
+                   class="bg-yellow-500 text-black px-4 py-3 rounded-lg inline-block font-semibold">
+                    Login
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-grid"></div>
+    <div class="glow one"></div>
+    <div class="glow two"></div>
+
+    <div class="max-w-7xl mx-auto px-6 py-20 md:py-28 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-14 items-center">
+
+            <div>
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 mb-6">
+                    <span class="live-dot"></span>
+                    Markets moving in real time
+                </div>
+
+                <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+                    Trade smarter.
+                    <span class="text-yellow-400">Build your future.</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-gray-300 max-w-xl mb-8">
+                    Explore a modern demo trading environment for Gold,
+                    Forex, Crypto, Stocks, Silver and other global markets.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="register.html"
+                       class="btn-main bg-yellow-500 text-black px-7 py-4 rounded-xl font-bold">
+                        Start Investing
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+
+                    <a href="markets.html"
+                       class="px-7 py-4 rounded-xl font-semibold border border-white/15 bg-white/5 hover:bg-white/10 transition">
+                        Explore Markets
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 max-w-xl mt-10">
+                    <div class="stat-pill">
+                        <div class="text-xs text-gray-400">Gold</div>
+                        <div class="font-bold">$2,438</div>
+                        <div class="text-xs up">+1.24%</div>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="text-xs text-gray-400">Bitcoin</div>
+                        <div class="font-bold">$118K</div>
+                        <div class="text-xs up">+2.18%</div>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="text-xs text-gray-400">NASDAQ</div>
+                        <div class="font-bold">23.8K</div>
+                        <div class="text-xs up">+0.76%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANIMATED TRADING PANEL -->
+            <div class="trading-card">
+                <div class="p-5 flex items-center justify-between border-b border-white/10">
+                    <div>
+                        <div class="text-sm text-gray-400">MARKET OVERVIEW</div>
+                        <div class="text-2xl font-bold">Gold / USD</div>
+                    </div>
+                    <div class="text-right">
+                        <div id="heroPrice" class="text-2xl font-bold">$2,438.20</div>
+                        <div id="heroChange" class="text-sm up">+1.24%</div>
+                    </div>
+                </div>
+
+                <div class="chart">
+                    <svg viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#22c55e" stop-opacity=".25"/>
+                                <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path
+                            d="M0 210 C55 198,70 215,115 170
+                               S170 150,205 176
+                               S260 115,305 142
+                               S355 90,405 124
+                               S470 145,515 92
+                               S570 120,620 78
+                               S680 104,720 68
+                               S780 92,820 52
+                               S880 80,920 35
+                               S965 60,1000 18
+                               L1000 260 L0 260 Z"
+                            fill="url(#chartFill)"
+                            stroke="none">
+                        </path>
+                        <path
+                            class="chart-line"
+                            d="M0 210 C55 198,70 215,115 170
+                               S170 150,205 176
+                               S260 115,305 142
+                               S355 90,405 124
+                               S470 145,515 92
+                               S570 120,620 78
+                               S680 104,720 68
+                               S780 92,820 52
+                               S880 80,920 35
+                               S965 60,1000 18">
+                        </path>
+                    </svg>
+
+                    <div class="candle green" style="left:8%;height:55px;animation-delay:.1s"></div>
+                    <div class="candle red" style="left:15%;height:32px;animation-delay:.4s"></div>
+                    <div class="candle green" style="left:23%;height:72px;animation-delay:.7s"></div>
+                    <div class="candle green" style="left:34%;height:46px;animation-delay:1s"></div>
+                    <div class="candle red" style="left:44%;height:38px;animation-delay:1.3s"></div>
+                    <div class="candle green" style="left:54%;height:84px;animation-delay:1.6s"></div>
+                    <div class="candle green" style="left:67%;height:66px;animation-delay:1.9s"></div>
+                    <div class="candle red" style="left:76%;height:42px;animation-delay:2.2s"></div>
+                    <div class="candle green" style="left:87%;height:92px;animation-delay:2.5s"></div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 p-5">
+                    <div>
+                        <div class="text-xs text-gray-500">24H HIGH</div>
+                        <div class="font-semibold">$2,461.80</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500">24H LOW</div>
+                        <div class="font-semibold">$2,391.40</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500">VOLUME</div>
+                        <div class="font-semibold">$8.42B</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- MARKET SNAPSHOT -->
+<section id="markets" class="py-20 bg-[#081321]">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+            <div>
+                <p class="text-yellow-400 font-semibold uppercase tracking-widest text-sm">
+                    Market snapshot
+                </p>
+                <h2 class="section-title text-4xl md:text-5xl font-bold mt-2">
+                    Popular <span>markets</span>
+                </h2>
+            </div>
+
+            <a href="markets.html"
+               class="text-gray-300 hover:text-yellow-400 transition">
+                View all markets <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+            <div class="asset-card rounded-2xl p-5">
+                <div class="flex justify-between items-center">
+                    <div class="asset-icon"><i class="fas fa-coins"></i></div>
+                    <span class="up text-sm font-semibold">+1.24%</span>
+                </div>
+                <div class="mt-5 text-gray-400 text-sm">Gold / USD</div>
+                <div id="goldCard" class="text-2xl font-bold mt-1">$2,438.20</div>
+                <div class="text-xs text-gray-500 mt-2">Precious metal</div>
+            </div>
+
+            <div class="asset-card rounded-2xl p-5">
+                <div class="flex justify-between items-center">
+                    <div class="asset-icon"><i class="fab fa-bitcoin"></i></div>
+                    <span class="up text-sm font-semibold">+2.18%</span>
+                </div>
+                <div class="mt-5 text-gray-400 text-sm">BTC / USD</div>
+                <div id="btcCard" class="text-2xl font-bold mt-1">$118,420</div>
+                <div class="text-xs text-gray-500 mt-2">Cryptocurrency</div>
+            </div>
+
+            <div class="asset-card rounded-2xl p-5">
+                <div class="flex justify-between items-center">
+                    <div class="asset-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <span class="up text-sm font-semibold">+0.42%</span>
+                </div>
+                <div class="mt-5 text-gray-400 text-sm">EUR / USD</div>
+                <div id="eurCard" class="text-2xl font-bold mt-1">1.1684</div>
+                <div class="text-xs text-gray-500 mt-2">Forex</div>
+            </div>
+
+            <div class="asset-card rounded-2xl p-5">
+                <div class="flex justify-between items-center">
+                    <div class="asset-icon"><i class="fas fa-chart-line"></i></div>
+                    <span class="up text-sm font-semibold">+0.76%</span>
+                </div>
+                <div class="mt-5 text-gray-400 text-sm">NASDAQ</div>
+                <div class="text-2xl font-bold mt-1">23,842</div>
+                <div class="text-xs text-gray-500 mt-2">US index</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- INVESTMENT OPPORTUNITIES -->
+<section class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <p class="text-yellow-400 font-semibold uppercase tracking-widest text-sm">
+                Explore opportunities
+            </p>
+            <h2 class="text-4xl md:text-5xl font-bold mt-2">
+                Multiple markets. One platform.
+            </h2>
+            <p class="text-gray-400 mt-4">
+                Explore different asset classes from a single dashboard.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+
+            <a href="markets.html" class="asset-card p-7 rounded-2xl">
+                <div class="asset-icon"><i class="fas fa-coins"></i></div>
+                <h3 class="text-2xl font-bold mt-5">Gold</h3>
+                <p class="mt-3 text-gray-400">Explore gold market movements and demo trading opportunities.</p>
+            </a>
+
+            <a href="markets.html" class="asset-card p-7 rounded-2xl">
+                <div class="asset-icon"><i class="fas fa-gem"></i></div>
+                <h3 class="text-2xl font-bold mt-5">Silver</h3>
+                <p class="mt-3 text-gray-400">Follow silver price movements in a clean trading interface.</p>
+            </a>
+
+            <a href="markets.html" class="asset-card p-7 rounded-2xl">
+                <div class="asset-icon"><i class="fas fa-money-bill-trend-up"></i></div>
+                <h3 class="text-2xl font-bold mt-5">Forex</h3>
+                <p class="mt-3 text-gray-400">Explore major and minor currency pairs.</p>
+            </a>
+
+            <a href="markets.html" class="asset-card p-7 rounded-2xl">
+                <div class="asset-icon"><i class="fab fa-bitcoin"></i></div>
+                <h3 class="text-2xl font-bold mt-5">Cryptocurrency</h3>
+                <p class="mt-3 text-gray-400">Explore digital assets including Bitcoin and Ethereum.</p>
+            </a>
+
+            <a href="markets.html" class="asset-card p-7 rounded-2xl">
+                <div class="asset-icon"><i class="fas fa-chart-column"></i></div>
+                <h3 class="text-2xl font-bold mt-5">Stocks</h3>
+                <p class="mt-3 text-gray-400">Browse stock-market style instruments and movements.</p>
+            </a>
+
+            <a href="markets.html" class="asset-card p-7 rounded-2xl">
+                <div class="asset-icon"><i class="fas fa-oil-well"></i></div>
+                <h3 class="text-2xl font-bold mt-5">Commodities</h3>
+                <p class="mt-3 text-gray-400">Explore oil, gas and other commodity markets.</p>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="py-20 bg-[#081321]">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+        <p class="text-yellow-400 font-semibold uppercase tracking-widest text-sm">About Marketrading</p>
+        <h2 class="text-4xl font-bold mt-2">A modern demo trading experience</h2>
+        <p class="text-gray-400 text-lg mt-5 max-w-3xl mx-auto">
+            Marketrading provides a modern interface for exploring markets,
+            practicing trades and managing a virtual trading account.
+        </p>
+
+        <div class="grid md:grid-cols-4 gap-5 mt-12">
+            <div class="stat-pill"><div class="text-3xl font-bold text-yellow-400">50K+</div><div class="text-gray-400 mt-1">Demo Investors</div></div>
+            <div class="stat-pill"><div class="text-3xl font-bold text-yellow-400">24/7</div><div class="text-gray-400 mt-1">Platform Access</div></div>
+            <div class="stat-pill"><div class="text-3xl font-bold text-yellow-400">6+</div><div class="text-gray-400 mt-1">Market Categories</div></div>
+            <div class="stat-pill"><div class="text-3xl font-bold text-yellow-400">99.9%</div><div class="text-gray-400 mt-1">Platform Uptime</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-20">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="rounded-3xl p-10 md:p-14 text-center border border-yellow-400/20 bg-gradient-to-br from-yellow-500/10 to-blue-500/10">
+            <h2 class="text-4xl md:text-5xl font-bold">Ready to explore the markets?</h2>
+            <p class="text-gray-400 mt-4 max-w-2xl mx-auto">
+                Create your account and enter the Marketrading demo environment.
+            </p>
+            <a href="register.html"
+               class="inline-block mt-8 btn-main bg-yellow-500 text-black px-8 py-4 rounded-xl font-bold">
+                Create Account
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-slate-950 border-t border-white/10 py-10 text-center">
+    <h2 class="text-2xl font-bold text-yellow-400">Marketrading</h2>
+    <p class="mt-3 text-gray-500">© 2026 Marketrading. All Rights Reserved.</p>
+</footer>
+
+<!-- Keep your existing project scripts -->
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<!-- Homepage-only animation; does not modify Supabase or other pages -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const menuBtn = document.getElementById("menuBtn");
+    const closeMenu = document.getElementById("closeMenu");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if(menuBtn && mobileMenu){
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.add("mobile-open");
+        });
+    }
+
+    if(closeMenu && mobileMenu){
+        closeMenu.addEventListener("click", () => {
+            mobileMenu.classList.remove("mobile-open");
+        });
+    }
+
+    document.querySelectorAll("#mobileMenu a").forEach(link => {
+        link.addEventListener("click", () => {
+            mobileMenu.classList.remove("mobile-open");
+        });
+    });
+
+    // Simulated demo prices: animated only, not live financial data.
+    let gold = 2438.20;
+    let btc = 118420;
+    let eur = 1.1684;
+
+    function animatePrices(){
+        gold += (Math.random() - .48) * 1.8;
+        btc += (Math.random() - .47) * 65;
+        eur += (Math.random() - .48) * .0008;
+
+        const goldText = "$" + gold.toLocaleString("en-US", {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        });
+
+        const btcText = "$" + Math.round(btc).toLocaleString("en-US");
+        const eurText = eur.toFixed(4);
+
+        const ids = {
+            goldPrice:goldText,
+            goldCard:goldText,
+            btcPrice:btcText,
+            btcCard:btcText,
+            eurPrice:eurText,
+            eurCard:eurText,
+            heroPrice:goldText
+        };
+
+        Object.keys(ids).forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.textContent = ids[id];
+        });
+    }
+
+    setInterval(animatePrices, 1400);
+});
+</script>
+
+</body>
+</html>

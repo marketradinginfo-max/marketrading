@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketrading | Withdraw</title>
+
+<link rel="stylesheet" href="withdraw.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>Marketrading</h2>
+
+<ul>
+
+<li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+
+<li><a href="deposit.html"><i class="fa-solid fa-wallet"></i> Deposit</a></li>
+
+<li class="active"><a href="withdraw.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdraw</a></li>
+
+<li><a href="investment-plans.html"><i class="fa-solid fa-chart-pie"></i> Investment Plans</a></li>
+
+<li><a href="transactions.html"><i class="fa-solid fa-clock-rotate-left"></i> Transactions</a></li>
+
+<li><a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a></li>
+
+<li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+
+<li id="logoutBtn"><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+
+</ul>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main">
+
+<div class="header">
+
+<h1>Withdraw Funds</h1>
+
+<p>Cash out from your Marketrading account</p>
+
+</div>
+
+<div class="balance-card">
+
+<h3>Available Balance</h3>
+
+<h2 id="currentBalance">$0.00</h2>
+
+</div>
+
+<div class="withdraw-box">
+
+<h2>Withdrawal Details</h2>
+
+<form id="withdrawForm">
+
+<label>Amount</label>
+
+<input
+id="withdrawAmount"
+type="number"
+name="amount"
+min="1"
+step="0.01"
+placeholder="Enter amount"
+required>
+
+<label>Withdrawal Method</label>
+
+<select id="withdrawMethod" name="method">
+
+<option value="Bank Transfer">Bank Transfer</option>
+
+<option value="Card">Card</option>
+
+<option value="Crypto">Crypto (USDT / BTC)</option>
+
+</select>
+
+<label>Account / Wallet Details</label>
+
+<input
+id="withdrawDestination"
+type="text"
+name="destination"
+placeholder="Bank account, card, or wallet address"
+required>
+
+<button type="submit" id="withdrawSubmitBtn">Request Withdrawal</button>
+
+</form>
+
+</div>
+
+<div class="history">
+
+<h2>Recent Withdrawals</h2>
+
+<table>
+
+<thead>
+<tr>
+
+<th>Date</th>
+
+<th>Amount</th>
+
+<th>Method</th>
+
+<th>Status</th>
+
+</tr>
+</thead>
+
+<tbody id="withdrawHistoryBody">
+
+<tr>
+<td colspan="4" class="loading">Loading withdrawals...</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+<script src="withdraw.js"></script>
+
+</body>
+
+</html>

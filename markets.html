@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketrading | Markets</title>
+
+<link rel="stylesheet" href="markets.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>Marketrading</h2>
+
+<ul>
+
+<li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+
+<li><a href="deposit.html"><i class="fa-solid fa-wallet"></i> Deposit</a></li>
+
+<li><a href="withdraw.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdraw</a></li>
+
+<li class="active"><a href="markets.html"><i class="fa-solid fa-chart-line"></i> Markets</a></li>
+
+<li><a href="investment-plans.html"><i class="fa-solid fa-chart-pie"></i> Investment Plans</a></li>
+
+<li><a href="transactions.html"><i class="fa-solid fa-clock-rotate-left"></i> Transactions</a></li>
+
+<li><a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a></li>
+
+<li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+
+<li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+
+</ul>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main">
+
+<div class="header">
+
+<h1>Live Markets</h1>
+
+<p>Track global financial markets in real time</p>
+
+</div>
+
+<!-- Market Cards -->
+
+<div class="market-grid">
+
+<div class="market-card">
+<i class="fa-solid fa-coins"></i>
+<h3>Gold (XAU/USD)</h3>
+<p class="price">$3,386.50</p>
+<span class="up">+1.25%</span>
+</div>
+
+<div class="market-card">
+<i class="fa-solid fa-coins"></i>
+<h3>Silver (XAG/USD)</h3>
+<p class="price">$39.10</p>
+<span class="up">+0.84%</span>
+</div>
+
+<div class="market-card">
+<i class="fa-solid fa-dollar-sign"></i>
+<h3>EUR/USD</h3>
+<p class="price">1.1768</p>
+<span class="down">-0.15%</span>
+</div>
+
+<div class="market-card">
+<i class="fa-brands fa-bitcoin"></i>
+<h3>BTC/USD</h3>
+<p class="price">$118,200</p>
+<span class="up">+2.45%</span>
+</div>
+
+<div class="market-card">
+<i class="fa-brands fa-ethereum"></i>
+<h3>ETH/USD</h3>
+<p class="price">$3,640</p>
+<span class="up">+1.92%</span>
+</div>
+
+<div class="market-card">
+<i class="fa-solid fa-chart-column"></i>
+<h3>NASDAQ</h3>
+<p class="price">20,950</p>
+<span class="up">+0.68%</span>
+</div>
+
+</div>
+
+<!-- TradingView Chart -->
+
+<div class="chart-section">
+
+<h2>Live Market Chart</h2>
+
+<div class="tradingview-widget-container">
+
+<div id="tradingview_chart"></div>
+
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+<script type="text/javascript">
+new TradingView.widget({
+"width": "100%",
+"height": 500,
+"symbol": "OANDA:XAUUSD",
+"interval": "60",
+"timezone": "Etc/UTC",
+"theme": "dark",
+"style": "1",
+"locale": "en",
+"toolbar_bg": "#0f172a",
+"enable_publishing": false,
+"hide_side_toolbar": false,
+"allow_symbol_change": true,
+"container_id": "tradingview_chart"
+});
+</script>
+
+</div>
+
+</div>
+
+<!-- Trending Assets -->
+
+<div class="trending">
+
+<h2>Trending Assets</h2>
+
+<table>
+
+<tr>
+<th>Asset</th>
+<th>Price</th>
+<th>Change</th>
+</tr>
+
+<tr>
+<td>Gold</td>
+<td>$3,386.50</td>
+<td class="green">+1.25%</td>
+</tr>
+
+<tr>
+<td>Bitcoin</td>
+<td>$118,200</td>
+<td class="green">+2.45%</td>
+</tr>
+
+<tr>
+<td>Ethereum</td>
+<td>$3,640</td>
+<td class="green">+1.92%</td>
+</tr>
+
+<tr>
+<td>EUR/USD</td>
+<td>1.1768</td>
+<td class="red">-0.15%</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketrading Dashboard</title>
+
+<!-- Dashboard CSS -->
+<link rel="stylesheet" href="dashboard.css">
+
+<!-- Font Awesome -->
+<link
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+rel="stylesheet"
+>
+
+</head>
+
+<body>
+
+<!-- =========================
+SIDEBAR
+========================== -->
+
+<div class="sidebar">
+
+<h2>Marketrading</h2>
+
+<ul>
+
+<li>
+<a href="dashboard.html">
+<i class="fa-solid fa-gauge"></i>
+Dashboard
+</a>
+</li>
+
+<li>
+<a href="deposit.html">
+<i class="fa-solid fa-wallet"></i>
+Deposit
+</a>
+</li>
+
+<li>
+<a href="withdraw.html">
+<i class="fa-solid fa-money-bill-transfer"></i>
+Withdraw
+</a>
+</li>
+
+<li>
+<a href="markets.html">
+<i class="fa-solid fa-chart-column"></i>
+Markets
+</a>
+</li>
+
+<li>
+<a href="transactions.html">
+<i class="fa-solid fa-clock-rotate-left"></i>
+Transactions
+</a>
+</li>
+
+<li>
+<a href="profile.html">
+<i class="fa-solid fa-user"></i>
+Profile
+</a>
+</li>
+
+<li id="logoutBtn">
+<i class="fa-solid fa-right-from-bracket"></i>
+Logout
+</li>
+
+</ul>
+
+</div>
+
+
+<!-- =========================
+MAIN CONTENT
+========================== -->
+
+<div class="main">
+
+
+<!-- =========================
+TOP BAR
+========================== -->
+
+<div class="topbar">
+
+<h1>Dashboard</h1>
+
+<div class="user">
+
+<!-- IMPORTANT:
+This ID must match dashboard.js
+-->
+
+<img
+id="dashboardAvatar"
+src="images/default-avatar.jpg"
+alt="Profile"
+>
+
+<div class="dashboard-user">
+
+<h3 id="welcomeUser">
+Welcome
+</h3>
+
+<small>
+Investor Account
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+ACCOUNT CARDS
+========================== -->
+
+<div class="cards">
+
+<div class="card">
+
+<h3>
+Account Balance
+</h3>
+<h2
+ id="accountBalance">
+$0.00
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Total Profit
+</h3>
+
+<h2 id="totalProfit">
+$0.00
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Active Investments
+</h3>
+
+<h2 id="activeInvestments">
+0
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Total Deposits
+</h3>
+
+<h2 id="totalDeposits">
+$0.00
+</h2>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+ACTION BUTTONS
+========================== -->
+
+<div class="actions">
+
+<a href="deposit.html">
+<button type="button">
+<i class="fa-solid fa-wallet"></i>
+Deposit
+</button>
+</a>
+
+
+<a href="withdraw.html">
+<button type="button">
+<i class="fa-solid fa-money-bill-transfer"></i>
+Withdraw
+</button>
+</a>
+
+
+<a href="investment-plans.html">
+<button type="button">
+<i class="fa-solid fa-chart-line"></i>
+Start Investment
+</button>
+</a>
+
+</div>
+
+
+<!-- =========================
+INVESTMENT MARKETS
+========================== -->
+
+<h2 class="section-title">
+Investment Markets
+</h2>
+
+
+<div class="markets">
+
+
+<div class="market-card">
+
+<h3>
+Gold
+</h3>
+
+<p>
+XAU/USD
+</p>
+
+</div>
+
+
+<div class="market-card">
+
+<h3>
+Silver
+</h3>
+
+<p>
+XAG/USD
+</p>
+
+</div>
+
+
+<div class="market-card">
+
+<h3>
+Forex
+</h3>
+
+<p>
+EUR/USD
+</p>
+
+</div>
+
+
+<div class="market-card">
+
+<h3>
+Crypto
+</h3>
+
+<p>
+BTC/USD
+</p>
+
+</div>
+
+
+<div class="market-card">
+
+<h3>
+Stocks
+</h3>
+
+<p>
+NASDAQ
+</p>
+
+</div>
+
+
+<div class="market-card">
+
+<h3>
+Oil
+</h3>
+
+<p>
+WTI
+</p>
+
+</div>
+
+
+</div>
+
+
+<!-- =========================
+RECENT TRANSACTIONS
+========================== -->
+
+<h2 class="section-title">
+Recent Transactions
+</h2>
+
+
+<div class="transaction-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Date
+</th>
+
+<th>
+Type
+</th>
+
+<th>
+Amount
+</th>
+
+<th>
+Status
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="transactionTableBody">
+
+<!-- Supabase transactions will appear here -->
+
+<tr>
+
+<td colspan="4">
+No transactions yet
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+</div>
+
+
+<!-- =========================
+SUPABASE
+========================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Your Supabase configuration -->
+<script src="supabase.js"></script>
+
+
+<!-- Dashboard JavaScript -->
+<script src="dashboard.js"></script>
+
+
+</body>
+</html>

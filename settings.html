@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketrading | Settings</title>
+
+<link rel="stylesheet" href="settings.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>Marketrading</h2>
+
+<ul>
+
+<li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+
+<li><a href="deposit.html"><i class="fa-solid fa-wallet"></i> Deposit</a></li>
+
+<li><a href="withdraw.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdraw</a></li>
+
+<li><a href="investment-plans.html"><i class="fa-solid fa-chart-pie"></i> Investment Plans</a></li>
+
+<li><a href="transactions.html"><i class="fa-solid fa-clock-rotate-left"></i> Transactions</a></li>
+
+<li><a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a></li>
+
+<li class="active"><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+
+<li id="logoutBtn"><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+
+</ul>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main">
+
+<div class="header">
+
+<h1>Settings</h1>
+
+<p>Manage your account security and preferences</p>
+
+</div>
+
+<div id="messageBox" class="message-box" style="display:none;"></div>
+
+<!-- Change Password -->
+
+<div class="settings-box">
+
+<h2>Change Password</h2>
+
+<form id="passwordForm">
+
+<label>New Password</label>
+
+<input
+id="newPassword"
+type="password"
+name="new_password"
+placeholder="Enter new password"
+required>
+
+<label>Confirm New Password</label>
+
+<input
+id="confirmNewPassword"
+type="password"
+name="confirm_new_password"
+placeholder="Confirm new password"
+required>
+
+<button type="submit" id="passwordSubmitBtn">Update Password</button>
+
+</form>
+
+</div>
+
+<!-- Notification Preferences -->
+
+<div class="settings-box">
+
+<h2>Notification Preferences</h2>
+
+<div class="toggle-row">
+
+<div>
+<h4>Email Notifications</h4>
+<p>Receive updates about deposits, withdrawals, and investments.</p>
+</div>
+
+<label class="switch">
+<input type="checkbox" id="emailNotifications" checked>
+<span class="slider"></span>
+</label>
+
+</div>
+
+<button type="button" id="savePreferencesBtn">Save Preferences</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+<script src="settings.js"></script>
+
+</body>
+
+</html>

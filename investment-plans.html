@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketrading | Investment Plans</title>
+
+<link rel="stylesheet" href="investment-plans.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>Marketrading</h2>
+
+<ul>
+
+<li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+
+<li><a href="deposit.html"><i class="fa-solid fa-wallet"></i> Deposit</a></li>
+
+<li><a href="withdraw.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdraw</a></li>
+
+<li class="active"><a href="investment-plans.html"><i class="fa-solid fa-chart-line"></i> Investment Plans</a></li>
+
+<li><a href="transactions.html"><i class="fa-solid fa-clock-rotate-left"></i> Transactions</a></li>
+
+<li><a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a></li>
+
+<li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+
+<li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+
+</ul>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main">
+
+<h1>Investment Plans</h1>
+
+<p class="subtitle">
+Choose an investment plan that matches your financial goals.
+</p>
+
+<div class="plans">
+
+<div class="plan">
+
+<h2>Starter</h2>
+
+<div class="price">$100 - $999</div>
+
+<ul>
+
+<li>5% Weekly Profit</li>
+
+<li>Minimum: $100</li>
+
+<li>Maximum: $999</li>
+
+<li>7 Days Duration</li>
+
+<li>24/7 Support</li>
+
+</ul>
+
+<button
+class="invest-btn"
+data-plan="Starter"
+data-min="100"
+data-max="999">Invest Now</button>
+
+</div>
+
+<div class="plan featured">
+
+<span class="badge">POPULAR</span>
+
+<h2>Silver</h2>
+
+<div class="price">$1,000 - $4,999</div>
+
+<ul>
+
+<li>10% Weekly Profit</li>
+
+<li>Minimum: $1,000</li>
+
+<li>Maximum: $4,999</li>
+
+<li>14 Days Duration</li>
+
+<li>Priority Support</li>
+
+</ul>
+
+<button
+class="invest-btn"
+data-plan="Silver"
+data-min="1000"
+data-max="4999">Invest Now</button>
+
+</div>
+
+<div class="plan">
+
+<h2>Gold</h2>
+
+<div class="price">$5,000 - $19,999</div>
+
+<ul>
+
+<li>15% Weekly Profit</li>
+
+<li>Minimum: $5,000</li>
+
+<li>Maximum: $19,999</li>
+
+<li>30 Days Duration</li>
+
+<li>Dedicated Manager</li>
+
+</ul>
+
+<button
+class="invest-btn"
+data-plan="Gold"
+data-min="5000"
+data-max="19999">Invest Now</button>
+
+</div>
+
+<div class="plan">
+
+<h2>VIP</h2>
+
+<div class="price">$20,000+</div>
+
+<ul>
+
+<li>20% Weekly Profit</li>
+
+<li>Minimum: $20,000</li>
+
+<li>No Maximum</li>
+
+<li>60 Days Duration</li>
+
+<li>Premium Support</li>
+
+</ul>
+
+<button
+class="invest-btn"
+data-plan="VIP"
+data-min="20000"
+data-max="">Invest Now</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="messageBox" class="message-box" style="display:none;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+<script src="investment-plans.js"></script>
+
+</body>
+
+</html>

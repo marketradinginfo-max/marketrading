@@ -1,0 +1,649 @@
+/* ==========================================
+MARKETRADING - PROFESSIONAL PROFILE
+========================================== */
+
+:root {
+--primary: #2563eb;
+--primary-dark: #1d4ed8;
+--dark: #0f172a;
+--dark-2: #172033;
+--text: #172033;
+--muted: #64748b;
+--border: #e2e8f0;
+--background: #f1f5f9;
+--white: #ffffff;
+--success: #16a34a;
+--danger: #ef4444;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: Inter, Arial, Helvetica, sans-serif;
+background: var(--background);
+color: var(--text);
+min-height: 100vh;
+}
+
+
+/* ==========================================
+SIDEBAR
+========================================== */
+
+.sidebar {
+position: fixed;
+left: 0;
+top: 0;
+width: 255px;
+height: 100vh;
+background: linear-gradient(
+180deg,
+#0b1220 0%,
+#111c31 100%
+);
+color: white;
+padding: 26px 16px;
+z-index: 1000;
+box-shadow: 4px 0 20px rgba(15, 23, 42, 0.08);
+}
+
+.logo {
+padding: 4px 12px 30px;
+}
+
+.logo h2 {
+color: #ffffff;
+font-size: 24px;
+font-weight: 800;
+letter-spacing: -0.5px;
+}
+
+.menu {
+list-style: none;
+}
+
+.menu li {
+margin-bottom: 5px;
+}
+
+.menu li a {
+position: relative;
+display: flex;
+align-items: center;
+gap: 14px;
+min-height: 48px;
+padding: 0 15px;
+border-radius: 10px;
+color: #aeb9ca;
+text-decoration: none;
+font-size: 14px;
+font-weight: 500;
+transition: all 0.2s ease;
+}
+
+.menu li a i {
+width: 20px;
+text-align: center;
+font-size: 16px;
+}
+
+.menu li a:hover {
+background: rgba(255, 255, 255, 0.07);
+color: #ffffff;
+}
+
+.menu li.active a {
+background: linear-gradient(
+135deg,
+#2563eb,
+#1d4ed8
+);
+color: #ffffff;
+box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+
+/* ==========================================
+MAIN
+========================================== */
+
+.main {
+margin-left: 255px;
+min-height: 100vh;
+padding: 30px 38px 50px;
+}
+
+
+/* ==========================================
+TOP BAR
+========================================== */
+
+.topbar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 30px;
+}
+
+.page-title h1 {
+color: #0f172a;
+font-size: 30px;
+font-weight: 800;
+letter-spacing: -0.8px;
+margin-bottom: 6px;
+}
+
+.page-title p {
+color: var(--muted);
+font-size: 14px;
+}
+
+.top-user {
+display: flex;
+align-items: center;
+gap: 12px;
+padding: 7px 12px 7px 7px;
+background: var(--white);
+border: 1px solid var(--border);
+border-radius: 30px;
+box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.top-user img {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+object-fit: cover;
+border: 2px solid #dbeafe;
+}
+
+.top-user span {
+color: #1e293b;
+font-size: 14px;
+font-weight: 700;
+padding-right: 4px;
+}
+
+
+/* ==========================================
+PROFILE GRID
+========================================== */
+
+.profile-grid {
+display: grid;
+grid-template-columns: 350px minmax(0, 1fr);
+gap: 24px;
+max-width: 1150px;
+}
+
+
+/* ==========================================
+CARDS
+========================================== */
+
+.card {
+background: var(--white);
+border: 1px solid rgba(226, 232, 240, 0.9);
+border-radius: 16px;
+padding: 28px;
+box-shadow:
+0 8px 30px rgba(15, 23, 42, 0.05);
+}
+
+.card h2 {
+color: #0f172a;
+font-size: 18px;
+font-weight: 750;
+margin-bottom: 25px;
+}
+
+
+/* ==========================================
+AVATAR CARD
+========================================== */
+
+.avatar-card {
+min-height: 410px;
+display: flex;
+flex-direction: column;
+}
+
+.avatar-area {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+flex: 1;
+}
+
+.avatar-wrapper {
+position: relative;
+width: 175px;
+height: 175px;
+margin-bottom: 22px;
+}
+
+.profile-avatar {
+width: 175px;
+height: 175px;
+display: block;
+object-fit: cover;
+border-radius: 50%;
+background: #e2e8f0;
+border: 6px solid #ffffff;
+box-shadow:
+0 0 0 2px #dbeafe,
+0 15px 35px rgba(15, 23, 42, 0.14);
+}
+
+.camera-button {
+position: absolute;
+right: 3px;
+bottom: 5px;
+width: 48px;
+height: 48px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: var(--primary);
+color: white;
+border: 4px solid white;
+border-radius: 50%;
+cursor: pointer;
+box-shadow: 0 7px 18px rgba(37, 99, 235, 0.3);
+transition: all 0.2s ease;
+}
+
+.camera-button:hover {
+background: var(--primary-dark);
+transform: scale(1.06);
+}
+
+.camera-button i {
+font-size: 17px;
+}
+
+.avatar-area h3 {
+color: #0f172a;
+font-size: 17px;
+margin-bottom: 8px;
+}
+
+.avatar-area p {
+max-width: 260px;
+color: var(--muted);
+font-size: 13px;
+line-height: 1.6;
+text-align: center;
+margin-bottom: 8px;
+}
+
+.avatar-area small {
+color: #94a3b8;
+font-size: 11px;
+}
+
+
+/* ==========================================
+INFORMATION CARD
+========================================== */
+
+.information-card {
+min-height: 410px;
+}
+
+#profileForm {
+width: 100%;
+}
+
+.form-group {
+margin-bottom: 20px;
+}
+
+.form-group label {
+display: block;
+color: #334155;
+font-size: 13px;
+font-weight: 700;
+margin-bottom: 8px;
+}
+
+.input-wrapper {
+position: relative;
+}
+
+.input-wrapper i {
+position: absolute;
+left: 15px;
+top: 50%;
+transform: translateY(-50%);
+color: #94a3b8;
+font-size: 14px;
+pointer-events: none;
+}
+
+.input-wrapper input {
+width: 100%;
+height: 48px;
+padding: 0 15px 0 43px;
+border: 1px solid var(--border);
+border-radius: 9px;
+outline: none;
+background: #ffffff;
+color: #0f172a;
+font-size: 14px;
+transition: all 0.2s ease;
+}
+
+.input-wrapper input::placeholder {
+color: #a1adbd;
+}
+
+.input-wrapper input:hover {
+border-color: #cbd5e1;
+}
+
+.input-wrapper input:focus {
+border-color: var(--primary);
+box-shadow:
+0 0 0 4px rgba(37, 99, 235, 0.09);
+}
+
+.input-wrapper input[readonly] {
+background: #f8fafc;
+color: #64748b;
+cursor: not-allowed;
+}
+
+.field-note {
+display: block;
+color: #94a3b8;
+font-size: 11px;
+margin-top: 6px;
+}
+
+
+/* ==========================================
+SAVE BUTTON
+========================================== */
+
+.save-button {
+width: auto;
+min-width: 160px;
+height: 46px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 9px;
+margin-top: 3px;
+padding: 0 20px;
+border: none;
+border-radius: 9px;
+background: linear-gradient(
+135deg,
+#16a34a,
+#15803d
+);
+color: white;
+font-size: 13px;
+font-weight: 700;
+cursor: pointer;
+box-shadow: 0 7px 16px rgba(22, 163, 74, 0.18);
+transition: all 0.2s ease;
+}
+
+.save-button:hover {
+transform: translateY(-1px);
+box-shadow: 0 9px 20px rgba(22, 163, 74, 0.24);
+}
+
+
+/* ==========================================
+ACCOUNT CARD
+========================================== */
+
+.account-card {
+max-width: 1150px;
+margin-top: 24px;
+}
+
+.account-card h2 {
+margin-bottom: 8px;
+}
+
+.account-row {
+min-height: 58px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-bottom: 1px solid #eef2f7;
+font-size: 14px;
+}
+
+.account-row:last-child {
+border-bottom: none;
+}
+
+.account-row span {
+color: #64748b;
+}
+
+.account-row strong {
+color: #1e293b;
+font-weight: 700;
+}
+
+.active-status {
+color: var(--success) !important;
+}
+
+.active-status i {
+font-size: 7px;
+margin-right: 5px;
+vertical-align: middle;
+}
+
+
+/* ==========================================
+SCROLLBAR
+========================================== */
+
+.sidebar::-webkit-scrollbar {
+width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+background: #334155;
+border-radius: 10px;
+}
+
+
+/* ==========================================
+TABLET
+========================================== */
+
+@media (max-width: 1050px) {
+
+.sidebar {
+width: 220px;
+}
+
+.main {
+margin-left: 220px;
+padding: 25px;
+}
+
+.profile-grid {
+grid-template-columns: 1fr;
+max-width: 750px;
+}
+
+.avatar-card {
+min-height: auto;
+}
+
+.avatar-area {
+padding: 10px 0;
+}
+}
+
+
+/* ==========================================
+MOBILE
+========================================== */
+
+@media (max-width: 700px) {
+
+.sidebar {
+position: relative;
+width: 100%;
+height: auto;
+padding: 16px;
+}
+
+.logo {
+padding: 5px 8px 18px;
+text-align: center;
+}
+
+.logo h2 {
+font-size: 22px;
+}
+
+.menu {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 6px;
+}
+
+.menu li {
+margin: 0;
+}
+
+.menu li a {
+min-height: 55px;
+flex-direction: column;
+justify-content: center;
+gap: 5px;
+padding: 7px 4px;
+font-size: 11px;
+text-align: center;
+}
+
+.menu li a i {
+width: auto;
+font-size: 15px;
+}
+
+.main {
+margin-left: 0;
+padding: 20px 15px 35px;
+}
+
+.topbar {
+align-items: center;
+gap: 15px;
+margin-bottom: 22px;
+}
+
+.page-title h1 {
+font-size: 23px;
+}
+
+.page-title p {
+font-size: 12px;
+}
+
+.top-user {
+padding: 4px;
+}
+
+.top-user span {
+display: none;
+}
+
+.top-user img {
+width: 40px;
+height: 40px;
+}
+
+.profile-grid {
+grid-template-columns: 1fr;
+gap: 16px;
+}
+
+.card {
+padding: 21px;
+border-radius: 13px;
+}
+
+.avatar-wrapper,
+.profile-avatar {
+width: 145px;
+height: 145px;
+}
+
+.camera-button {
+width: 44px;
+height: 44px;
+}
+
+.account-card {
+margin-top: 16px;
+}
+}
+
+
+/* ==========================================
+SMALL PHONES
+========================================== */
+
+@media (max-width: 400px) {
+
+.main {
+padding: 17px 12px 30px;
+}
+
+.menu {
+grid-template-columns: repeat(2, 1fr);
+}
+
+.page-title h1 {
+font-size: 21px;
+}
+
+.profile-grid {
+gap: 13px;
+}
+
+.card {
+padding: 18px;
+}
+
+.avatar-wrapper,
+.profile-avatar {
+width: 125px;
+height: 125px;
+}
+
+.camera-button {
+width: 40px;
+height: 40px;
+}
+
+.account-row {
+align-items: flex-start;
+flex-direction: column;
+justify-content: center;
+gap: 5px;
+padding: 14px 0;
+}
+
+.save-button {
+width: 100%;
+}
+}
