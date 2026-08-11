@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Marketrading Admin Dashboard</title>
 <link rel="stylesheet" href="admin-dashboard.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -16,8 +16,20 @@
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="brand"><i class="fa-solid fa-chart-line"></i><span>Marketrading</span></div>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open admin menu" aria-expanded="false">
+    <i class="fa-solid fa-bars"></i>
+</button>
+
+<aside class="sidebar" id="adminSidebar">
+    <div class="brand">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Marketrading</span>
+        <button class="mobile-close-btn" id="mobileCloseBtn" type="button" aria-label="Close admin menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
     <p class="admin-label">ADMIN PANEL</p>
     <ul class="sidebar-menu">
         <li class="active"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></li>
@@ -70,6 +82,7 @@
         <div><h2><i class="fa-solid fa-users"></i> User Management</h2><p>All registered Marketrading users.</p></div>
         <button id="refreshUsersBtn" class="refresh-btn" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
     </div>
+    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
     <div class="table-wrapper">
         <table>
             <thead><tr><th>User</th><th>Email</th><th>Country</th><th>Account Type</th><th>Balance</th><th>Role</th><th>Created</th></tr></thead>
@@ -80,6 +93,7 @@
 
 <section class="section">
     <div class="section-header"><div><h2><i class="fa-solid fa-wallet"></i> Pending Deposits</h2><p>Approve or reject deposit requests.</p></div></div>
+    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
     <div class="table-wrapper"><table>
         <thead><tr><th>User</th><th>Amount</th><th>Description</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
         <tbody id="depositsTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
@@ -88,6 +102,7 @@
 
 <section class="section">
     <div class="section-header"><div><h2><i class="fa-solid fa-money-bill-transfer"></i> Pending Withdrawals</h2><p>Approve or reject withdrawal requests.</p></div></div>
+    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
     <div class="table-wrapper"><table>
         <thead><tr><th>User</th><th>Amount</th><th>Method / Destination</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
         <tbody id="withdrawalsTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
@@ -96,6 +111,7 @@
 
 <section class="section">
     <div class="section-header"><div><h2><i class="fa-solid fa-chart-pie"></i> Pending Investments</h2><p>Approve or reject investment requests.</p></div></div>
+    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
     <div class="table-wrapper"><table>
         <thead><tr><th>User</th><th>Amount</th><th>Plan</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
         <tbody id="investmentsTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
@@ -104,6 +120,7 @@
 
 <section class="section">
     <div class="section-header"><div><h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Admin Credits</h2><p>Virtual-money credits made by administrators.</p></div></div>
+    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
     <div class="table-wrapper"><table>
         <thead><tr><th>User</th><th>Amount</th><th>Balance After</th><th>Description</th><th>Date</th></tr></thead>
         <tbody id="transactionsTableBody"><tr><td colspan="5">Loading...</td></tr></tbody>
