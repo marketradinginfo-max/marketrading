@@ -39,14 +39,17 @@ async function initTransactions() {
 
     const userId = session.user.id;
 
+    const transactionsBody =
+        document.getElementById("transactionsBody");
+
+    // Load only the user's normal transactions.
+    // Admin credit transactions are excluded completely.
     const { data, error } = await supabaseClient
         .from("transactions")
         .select("*")
         .eq("user_id", userId)
+        .neq("type", "admin_credit")
         .order("created_at", { ascending: false });
-
-    const transactionsBody =
-        document.getElementById("transactionsBody");
 
     if (error) {
         console.error("Error loading transactions:", error);
@@ -66,6 +69,8 @@ async function initTransactions() {
 
     renderTransactions();
 }
+
+
 
 
 // ------------------------------------------------------
