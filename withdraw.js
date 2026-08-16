@@ -11,7 +11,6 @@ let currentBalance = 0;
 // ------------------------------------------------------
 
 function formatMoney(amount) {
-
     const number = Number(amount || 0);
 
     return number.toLocaleString("en-US", {
@@ -52,13 +51,16 @@ async function initWithdraw() {
         console.error("Error loading profile:", profileError);
     }
 
-    currentBalance = profile ? Number(profile.balance || 0) : 0;
+    currentBalance = profile
+        ? Number(profile.balance || 0)
+        : 0;
 
     const balanceElement =
         document.getElementById("currentBalance");
 
     if (balanceElement) {
-        balanceElement.textContent = formatMoney(currentBalance);
+        balanceElement.textContent =
+            formatMoney(currentBalance);
     }
 
     await loadWithdrawHistory();
@@ -96,7 +98,19 @@ if (withdrawForm) {
         const destinationInput =
             document.getElementById("withdrawDestination");
 
-        const amount = Number(amountInput.value);
+        const amount =
+            Number(amountInput.value);
+
+        const method =
+            methodInput.value;
+
+        const destination =
+            destinationInput.value.trim();
+
+
+        // --------------------------------------------------
+        // VALIDATION
+        // --------------------------------------------------
 
         if (!amount || amount <= 0) {
             alert("Please enter a valid withdrawal amount.");
@@ -108,65 +122,116 @@ if (withdrawForm) {
             return;
         }
 
-        if (!destinationInput.value.trim()) {
-            alert("Please provide destination account/wallet details.");
+        if (!destination) {
+            alert("Please provide your account or wallet details.");
             return;
         }
 
 
+        // --------------------------------------------------
+        // DISABLE BUTTON
+        // --------------------------------------------------
+
         if (withdrawSubmitBtn) {
+
             withdrawSubmitBtn.disabled = true;
-            withdrawSubmitBtn.textContent = "Processing...";
+
+            withdrawSubmitBtn.textContent =
+                "Processing...";
+
+            withdrawSubmitBtn.style.opacity = "0.7";
+            withdrawSubmitBtn.style.cursor = "not-allowed";
         }
 
 
         try {
 
-            // NOTE: like deposits and investments, this only logs
-            // the withdrawal request as "pending". The balance is
-            // NOT deducted from the client — that must happen
-            // through a trusted server-side process once an admin
-            // reviews and approves the request, so a user can't
-            // just edit client code to withdraw more than they have.
+            // --------------------------------------------------
+            // SAVE WITHDRAWAL
+            // --------------------------------------------------
+
+            const description =
+                `${method} withdrawal to ${destination}`;
+
             const { error } = await supabaseClient
                 .from("transactions")
                 .insert([
                     {
                         user_id: currentUserId,
-                        amount,
+                        amount: amount,
                         type: "withdrawal",
-                        status: "pending",
-                        description:
-                            `${methodInput.value} withdrawal to ` +
-                            destinationInput.value.trim()
+
+                        // IMPORTANT:
+                        // The request starts as PROCESSING.
+                        status: "processing",
+
+                        description: description
                     }
                 ]);
 
+
             if (error) {
-                console.error("Withdrawal error:", error);
-                alert(error.message || "Unable to submit withdrawal.");
+
+                console.error(
+                    "Withdrawal error:",
+                    error
+                );
+
+                alert(
+                    error.message ||
+                    "Unable to submit withdrawal."
+                );
+
                 return;
             }
 
+
+            // --------------------------------------------------
+            // SUCCESS
+            // --------------------------------------------------
+
             alert(
-                "Withdrawal request submitted! It will be processed " +
-                "once reviewed."
+                "Withdrawal request submitted successfully. " +
+                "Your withdrawal is now being processed."
             );
 
+
+            // Clear form
             withdrawForm.reset();
 
+
+            // Reload withdrawal history
             await loadWithdrawHistory();
+
 
         } catch (err) {
 
-            console.error("Unexpected withdrawal error:", err);
-            alert(err.message || "An unexpected error occurred.");
+            console.error(
+                "Unexpected withdrawal error:",
+                err
+            );
+
+            alert(
+                err.message ||
+                "An unexpected error occurred."
+            );
+
 
         } finally {
 
+            // --------------------------------------------------
+            // RESTORE BUTTON
+            // --------------------------------------------------
+
             if (withdrawSubmitBtn) {
+
                 withdrawSubmitBtn.disabled = false;
-                withdrawSubmitBtn.textContent = "Request Withdrawal";
+
+                withdrawSubmitBtn.textContent =
+                    "Request Withdrawal";
+
+                withdrawSubmitBtn.style.opacity = "1";
+                withdrawSubmitBtn.style.cursor = "pointer";
             }
         }
     });
@@ -186,64 +251,172 @@ async function loadWithdrawHistory() {
         return;
     }
 
-    const { data, error } = await supabaseClient
+
+    const {
+        data,
+        error
+    } = await supabaseClient
         .from("transactions")
         .select("*")
         .eq("user_id", currentUserId)
         .eq("type", "withdrawal")
-        .order("created_at", { ascending: false })
+        .order("created_at", {
+            ascending: false
+        })
         .limit(10);
 
+
     if (error) {
-        console.error("Error loading withdrawal history:", error);
+
+        console.error(
+            "Error loading withdrawal history:",
+            error
+        );
 
         withdrawHistoryBody.innerHTML = `
             <tr>
-                <td colspan="4">Unable to load withdrawals.</td>
+                <td colspan="4">
+                    Unable to load withdrawals.
+                </td>
             </tr>
         `;
 
         return;
     }
+
 
     if (!data || !data.length) {
 
         withdrawHistoryBody.innerHTML = `
             <tr>
-                <td colspan="4">No withdrawals yet.</td>
+                <td colspan="4">
+                    No withdrawals yet.
+                </td>
             </tr>
         `;
 
         return;
     }
 
+
     withdrawHistoryBody.innerHTML = "";
+
 
     data.forEach(withdrawal => {
 
-        const row = document.createElement("tr");
+        const row =
+            document.createElement("tr");
+
+
+        // --------------------------------------------------
+        // DATE
+        // --------------------------------------------------
 
         const date =
             withdrawal.created_at
-                ? new Date(withdrawal.created_at).toLocaleDateString(
+                ? new Date(
+                    withdrawal.created_at
+                ).toLocaleDateString(
                     "en-US",
-                    { day: "numeric", month: "long", year: "numeric" }
+                    {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    }
                 )
                 : "-";
 
-        const method =
-            (withdrawal.description || "").split(" withdrawal to")[0] ||
-            "Withdrawal";
+
+        // --------------------------------------------------
+        // METHOD
+        // --------------------------------------------------
+
+        const description =
+            withdrawal.description || "";
+
+        let method = "Withdrawal";
+
+        if (description.includes(" withdrawal to")) {
+
+            method =
+                description.split(
+                    " withdrawal to"
+                )[0];
+        }
+
+
+        // --------------------------------------------------
+        // STATUS
+        // --------------------------------------------------
+
+        const status =
+            (withdrawal.status || "processing")
+                .toLowerCase();
+
+
+        let statusText =
+            "Processing";
+
+
+        if (status === "completed") {
+            statusText = "Completed";
+        }
+
+        else if (status === "approved") {
+            statusText = "Approved";
+        }
+
+        else if (status === "rejected") {
+            statusText = "Rejected";
+        }
+
+        else if (status === "cancelled") {
+            statusText = "Cancelled";
+        }
+
+        else {
+            statusText = "Processing";
+        }
+
+
+        // --------------------------------------------------
+        // STATUS CLASS
+        // --------------------------------------------------
+
+        const statusClass =
+            status === "completed"
+                ? "completed"
+                : status === "approved"
+                    ? "approved"
+                    : status === "rejected"
+                        ? "rejected"
+                        : status === "cancelled"
+                            ? "cancelled"
+                            : "processing";
+
+
+        // --------------------------------------------------
+        // ROW
+        // --------------------------------------------------
 
         row.innerHTML = `
             <td>${date}</td>
-            <td>${formatMoney(withdrawal.amount)}</td>
-            <td>${method}</td>
-            <td class="${withdrawal.status || "pending"}">
-                ${(withdrawal.status || "pending")
-                    .replace(/^\w/, c => c.toUpperCase())}
+
+            <td>
+                ${formatMoney(withdrawal.amount)}
+            </td>
+
+            <td>
+                ${method}
+            </td>
+
+            <td>
+                <span class="withdraw-status ${statusClass}">
+                    ${statusText}
+                </span>
             </td>
         `;
+
 
         withdrawHistoryBody.appendChild(row);
     });
@@ -257,22 +430,38 @@ async function loadWithdrawHistory() {
 const logoutBtn =
     document.getElementById("logoutBtn");
 
+
 if (logoutBtn) {
 
-    logoutBtn.addEventListener("click", async (e) => {
+    logoutBtn.addEventListener(
+        "click",
+        async (e) => {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        const { error } = await supabaseClient.auth.signOut();
+            const { error } =
+                await supabaseClient.auth.signOut();
 
-        if (error) {
-            console.error("Logout error:", error);
-            alert("Logout failed. Please try again.");
-            return;
+
+            if (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+
+                alert(
+                    "Logout failed. Please try again."
+                );
+
+                return;
+            }
+
+
+            window.location.href =
+                "login.html";
         }
-
-        window.location.href = "login.html";
-    });
+    );
 }
 
 
@@ -280,4 +469,7 @@ if (logoutBtn) {
 // START
 // ------------------------------------------------------
 
-document.addEventListener("DOMContentLoaded", initWithdraw);
+document.addEventListener(
+    "DOMContentLoaded",
+    initWithdraw
+);

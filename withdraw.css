@@ -206,3 +206,40 @@ padding:20px;
 }
 
 }
+
+/* ==========================================
+   WITHDRAWAL STATUS
+   ========================================== */
+
+   .withdraw-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.withdraw-status.processing {
+    color: #16a34a;
+    background: #dcfce7;
+}
+
+.withdraw-status.completed {
+    color: #16a34a;
+    background: #dcfce7;
+}
+
+.withdraw-status.approved {
+    color: #2563eb;
+    background: #dbeafe;
+}
+
+.withdraw-status.rejected {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.withdraw-status.cancelled {
+    color: #6b7280;
+    background: #f3f4f6;
+}
