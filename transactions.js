@@ -24,12 +24,12 @@ function formatMoney(amount) {
 
 
 // ------------------------------------------------------
-// NORMALIZE TRANSACTION TYPE
+// NORMALIZE TEXT
 // ------------------------------------------------------
 
-function normalizeTransactionType(type) {
+function normalizeTransactionType(value) {
 
-    return String(type || "")
+    return String(value || "")
         .trim()
         .toLowerCase()
         .replace(/[_-]+/g, " ")
@@ -43,13 +43,58 @@ function normalizeTransactionType(type) {
 
 function isAdminCredit(transaction) {
 
+    if (!transaction) {
+        return false;
+    }
+
     const type = normalizeTransactionType(
-        transaction?.type
+        transaction.type
     );
 
-    return (
-        type === "admin credit" ||
-        type === "admincredit"
+    const description = normalizeTransactionType(
+        transaction.description
+    );
+
+    /*
+     * Hide admin credit regardless of capitalization
+     * or whether it uses _, -, or spaces.
+     */
+
+    const adminCreditTypes = [
+        "admin credit",
+        "admincredit",
+        "administrator credit",
+        "admin balance credit",
+        "admin credited",
+        "manual credit",
+        "manual admin credit"
+    ];
+
+    if (adminCreditTypes.includes(type)) {
+        return true;
+    }
+
+
+    /*
+     * Also check the description.
+     *
+     * This protects against situations where the
+     * transaction type is "credit" but the description
+     * says "Admin credit".
+     */
+
+    const adminCreditDescriptionWords = [
+        "admin credit",
+        "admin credited",
+        "credited by admin",
+        "manual credit",
+        "administrator credit",
+        "balance credited by admin"
+    ];
+
+    return adminCreditDescriptionWords.some(
+        phrase =>
+            description.includes(phrase)
     );
 }
 
@@ -67,23 +112,32 @@ async function initTransactions() {
             error: sessionError
         } = await supabaseClient.auth.getSession();
 
+
         if (sessionError || !session) {
 
             window.location.href = "login.html";
+
             return;
         }
 
+
         const userId = session.user.id;
 
+
         const transactionsBody =
-            document.getElementById("transactionsBody");
+            document.getElementById(
+                "transactionsBody"
+            );
 
 
         // --------------------------------------------------
         // LOAD USER TRANSACTIONS
         // --------------------------------------------------
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("transactions")
             .select("*")
             .eq("user_id", userId)
@@ -98,6 +152,7 @@ async function initTransactions() {
                 "Error loading transactions:",
                 error
             );
+
 
             if (transactionsBody) {
 
@@ -115,22 +170,30 @@ async function initTransactions() {
 
 
         // --------------------------------------------------
-        // HIDE ADMIN CREDITS
-        // --------------------------------------------------
-        // This works whether the database contains:
-        //
-        // admin_credit
-        // admin credit
-        // Admin credit
-        // ADMIN CREDIT
-        // admin-credit
-        //
-        // Admin credits remain in Supabase.
-        // They are simply not shown to the user.
+        // REMOVE ADMIN CREDITS
         // --------------------------------------------------
 
         allTransactions = (data || []).filter(
-            transaction => !isAdminCredit(transaction)
+            transaction =>
+                !isAdminCredit(transaction)
+        );
+
+
+        // --------------------------------------------------
+        // DEBUG
+        // --------------------------------------------------
+        // This shows in the browser console what was
+        // removed. You can remove this section later.
+        // --------------------------------------------------
+
+        console.log(
+            "Transactions loaded:",
+            data || []
+        );
+
+        console.log(
+            "Transactions visible to user:",
+            allTransactions
         );
 
 
@@ -142,6 +205,7 @@ async function initTransactions() {
             "Transactions initialization error:",
             error
         );
+
     }
 }
 
@@ -153,7 +217,10 @@ async function initTransactions() {
 function renderTransactions() {
 
     const transactionsBody =
-        document.getElementById("transactionsBody");
+        document.getElementById(
+            "transactionsBody"
+        );
+
 
     if (!transactionsBody) {
         return;
@@ -161,12 +228,13 @@ function renderTransactions() {
 
 
     // --------------------------------------------------
-    // NEVER DISPLAY ADMIN CREDIT
+    // SAFETY FILTER
     // --------------------------------------------------
 
     const visibleTransactions =
         allTransactions.filter(
-            transaction => !isAdminCredit(transaction)
+            transaction =>
+                !isAdminCredit(transaction)
         );
 
 
@@ -242,7 +310,8 @@ function renderTransactions() {
 
         let typeLabel =
             normalizeTransactionType(
-                transaction.type || "transaction"
+                transaction.type ||
+                "transaction"
             );
 
 
@@ -259,7 +328,8 @@ function renderTransactions() {
         // --------------------------------------------------
 
         const status =
-            transaction.status || "pending";
+            transaction.status ||
+            "pending";
 
 
         // --------------------------------------------------
@@ -267,6 +337,7 @@ function renderTransactions() {
         // --------------------------------------------------
 
         row.innerHTML = `
+
             <td>
                 ${escapeHtmlLocal(date)}
             </td>
@@ -277,12 +348,15 @@ function renderTransactions() {
 
             <td>
                 ${escapeHtmlLocal(
-                    transaction.description || "-"
+                    transaction.description ||
+                    "-"
                 )}
             </td>
 
             <td>
-                ${formatMoney(transaction.amount)}
+                ${formatMoney(
+                    transaction.amount
+                )}
             </td>
 
             <td class="status status-${escapeHtmlLocal(status)}">
@@ -294,6 +368,7 @@ function renderTransactions() {
                     )
                 )}
             </td>
+
         `;
 
 
@@ -327,7 +402,9 @@ document.addEventListener(
     () => {
 
         const filterButtons =
-            document.querySelectorAll(".filter-btn");
+            document.querySelectorAll(
+                ".filter-btn"
+            );
 
 
         filterButtons.forEach(button => {
@@ -338,15 +415,20 @@ document.addEventListener(
 
                     filterButtons.forEach(
                         item =>
-                            item.classList.remove("active")
+                            item.classList.remove(
+                                "active"
+                            )
                     );
 
 
-                    button.classList.add("active");
+                    button.classList.add(
+                        "active"
+                    );
 
 
                     activeFilter =
-                        button.dataset.filter || "all";
+                        button.dataset.filter ||
+                        "all";
 
 
                     renderTransactions();
@@ -369,7 +451,9 @@ document.addEventListener(
     () => {
 
         const logoutBtn =
-            document.getElementById("logoutBtn");
+            document.getElementById(
+                "logoutBtn"
+            );
 
 
         if (!logoutBtn) {
@@ -379,12 +463,14 @@ document.addEventListener(
 
         logoutBtn.addEventListener(
             "click",
-            async (event) => {
+            async event => {
 
                 event.preventDefault();
 
 
-                const { error } =
+                const {
+                    error
+                } =
                     await supabaseClient.auth.signOut();
 
 
