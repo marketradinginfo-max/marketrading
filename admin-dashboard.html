@@ -3,134 +3,784 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <title>Marketrading Admin Dashboard</title>
+
 <link rel="stylesheet" href="admin-dashboard.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <style>
-.admin-actions{display:flex;gap:8px;flex-wrap:wrap}
-.admin-actions button{border:0;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}
-.approve-btn{background:#22c55e;color:#06110a}.reject-btn{background:#ef4444;color:white}
-.small-muted{color:#94a3b8;font-size:12px}
-.status-badge{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#334155}
+.admin-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.admin-actions button{
+    border:0;
+    border-radius:8px;
+    padding:8px 12px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.approve-btn{
+    background:#22c55e;
+    color:#06110a;
+}
+
+.reject-btn{
+    background:#ef4444;
+    color:white;
+}
+
+.small-muted{
+    color:#94a3b8;
+    font-size:12px;
+}
+
+.status-badge{
+    padding:5px 9px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    background:#334155;
+}
 </style>
+
 </head>
+
 <body>
 
 <div class="mobile-overlay" id="mobileOverlay"></div>
 
-<button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open admin menu" aria-expanded="false">
+<button
+    class="mobile-menu-btn"
+    id="mobileMenuBtn"
+    type="button"
+    aria-label="Open admin menu"
+    aria-expanded="false"
+>
     <i class="fa-solid fa-bars"></i>
 </button>
 
 <aside class="sidebar" id="adminSidebar">
+
     <div class="brand">
+
         <i class="fa-solid fa-chart-line"></i>
+
         <span>Marketrading</span>
-        <button class="mobile-close-btn" id="mobileCloseBtn" type="button" aria-label="Close admin menu">
+
+        <button
+            class="mobile-close-btn"
+            id="mobileCloseBtn"
+            type="button"
+            aria-label="Close admin menu"
+        >
             <i class="fa-solid fa-xmark"></i>
         </button>
+
     </div>
+
     <p class="admin-label">ADMIN PANEL</p>
+
     <ul class="sidebar-menu">
-        <li class="active"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></li>
-        <li><i class="fa-solid fa-users"></i><span>Users</span></li>
-        <li><i class="fa-solid fa-wallet"></i><span>Deposits</span></li>
-        <li><i class="fa-solid fa-money-bill-transfer"></i><span>Withdrawals</span></li>
-        <li><i class="fa-solid fa-chart-pie"></i><span>Investments</span></li>
-        <li><i class="fa-solid fa-gear"></i><span>Settings</span></li>
-        <li id="logoutBtn" class="logout-item"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></li>
+
+        <li class="active">
+            <i class="fa-solid fa-gauge"></i>
+            <span>Dashboard</span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-users"></i>
+            <span>Users</span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-wallet"></i>
+            <span>Deposits</span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>Withdrawals</span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Investments</span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </li>
+
+        <li id="logoutBtn" class="logout-item">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </li>
+
     </ul>
+
 </aside>
 
 <main class="main">
+
 <header class="topbar">
+
     <div>
+
         <h1>Admin Dashboard</h1>
-        <p>Manage users, virtual funds and requests</p>
+
+        <p>
+            Manage users, virtual funds and requests
+        </p>
+
     </div>
+
     <div class="profile">
-        <img id="adminAvatar" src="images/default-avatar.jpg" alt="Administrator">
-        <div><h4 id="adminName">Administrator</h4><p>Super Admin</p></div>
+
+        <img
+            id="adminAvatar"
+            src="images/default-avatar.jpg"
+            alt="Administrator"
+        >
+
+        <div>
+
+            <h4 id="adminName">
+                Administrator
+            </h4>
+
+            <p>
+                Super Admin
+            </p>
+
+        </div>
+
     </div>
+
 </header>
+
 
 <div id="messageBox" class="message-box"></div>
 
+
+<!-- ======================================================
+     STATISTICS
+====================================================== -->
+
 <section class="stats">
-    <div class="box"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div><h3 id="totalUsers">0</h3><p>Total Users</p></div></div>
-    <div class="box"><div class="stat-icon"><i class="fa-solid fa-wallet"></i></div><div><h3 id="totalBalance">$0.00</h3><p>Total Virtual Balance</p></div></div>
-    <div class="box"><div class="stat-icon"><i class="fa-solid fa-arrow-up"></i></div><div><h3 id="totalCredits">$0.00</h3><p>Total Admin Credits</p></div></div>
-    <div class="box"><div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div><div><h3>Secure</h3><p>Admin Status</p></div></div>
+
+    <div class="box">
+
+        <div class="stat-icon">
+            <i class="fa-solid fa-users"></i>
+        </div>
+
+        <div>
+
+            <h3 id="totalUsers">
+                0
+            </h3>
+
+            <p>
+                Total Users
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="box">
+
+        <div class="stat-icon">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+
+        <div>
+
+            <h3 id="totalBalance">
+                $0.00
+            </h3>
+
+            <p>
+                Total Virtual Balance
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="box">
+
+        <div class="stat-icon">
+            <i class="fa-solid fa-arrow-up"></i>
+        </div>
+
+        <div>
+
+            <h3 id="totalCredits">
+                $0.00
+            </h3>
+
+            <p>
+                Total Admin Credits
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="box">
+
+        <div class="stat-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+
+        <div>
+
+            <h3>
+                Secure
+            </h3>
+
+            <p>
+                Admin Status
+            </p>
+
+        </div>
+
+    </div>
+
 </section>
+
+
+<!-- ======================================================
+     CREDIT VIRTUAL MONEY
+====================================================== -->
 
 <section class="section credit-section">
+
     <div class="section-header">
-        <div><h2><i class="fa-solid fa-circle-dollar-to-slot"></i> Credit Virtual Money</h2><p>Add virtual funds to a user's balance.</p></div>
-    </div>
-    <form id="creditForm">
-        <div class="form-grid">
-            <div class="form-group"><label for="userSelect">Select User</label><select id="userSelect" required><option value="">Loading users...</option></select></div>
-            <div class="form-group"><label for="creditAmount">Amount</label><input type="number" id="creditAmount" min="0.01" step="0.01" placeholder="Enter amount" required></div>
-            <div class="form-group"><label for="creditDescription">Reason</label><input type="text" id="creditDescription" maxlength="200" placeholder="Example: Demo promotional credit"></div>
-            <div class="form-group button-group"><button type="submit" id="creditBtn" class="credit-btn"><i class="fa-solid fa-plus"></i> Credit Balance</button></div>
+
+        <div>
+
+            <h2>
+                <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                Credit Virtual Money
+            </h2>
+
+            <p>
+                Add virtual funds to a user's balance.
+            </p>
+
         </div>
+
+    </div>
+
+
+    <form id="creditForm">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label for="userSelect">
+                    Select User
+                </label>
+
+                <select
+                    id="userSelect"
+                    required
+                >
+
+                    <option value="">
+                        Loading users...
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="creditAmount">
+                    Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="creditAmount"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Enter amount"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="creditDescription">
+                    Reason
+                </label>
+
+                <input
+                    type="text"
+                    id="creditDescription"
+                    maxlength="200"
+                    placeholder="Example: Demo promotional credit"
+                >
+
+            </div>
+
+
+            <div class="form-group button-group">
+
+                <button
+                    type="submit"
+                    id="creditBtn"
+                    class="credit-btn"
+                >
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Credit Balance
+
+                </button>
+
+            </div>
+
+        </div>
+
     </form>
+
 </section>
 
+
+<!-- ======================================================
+     USER MANAGEMENT
+====================================================== -->
+
 <section class="section">
+
     <div class="section-header">
-        <div><h2><i class="fa-solid fa-users"></i> User Management</h2><p>All registered Marketrading users.</p></div>
-        <button id="refreshUsersBtn" class="refresh-btn" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
+
+        <div>
+
+            <h2>
+                <i class="fa-solid fa-users"></i>
+                User Management
+            </h2>
+
+            <p>
+                All registered Marketrading users.
+            </p>
+
+        </div>
+
+
+        <button
+            id="refreshUsersBtn"
+            class="refresh-btn"
+            type="button"
+        >
+
+            <i class="fa-solid fa-rotate"></i>
+
+            Refresh
+
+        </button>
+
     </div>
-    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
+
+
+    <div class="table-scroll-hint">
+
+        <i class="fa-solid fa-arrows-left-right"></i>
+
+        Swipe horizontally to view all columns
+
+    </div>
+
+
     <div class="table-wrapper">
+
         <table>
-            <thead><tr><th>User</th><th>Email</th><th>Country</th><th>Account Type</th><th>Balance</th><th>Role</th><th>Created</th></tr></thead>
-            <tbody id="usersTableBody"><tr><td colspan="7" class="loading">Loading users...</td></tr></tbody>
+
+            <thead>
+
+                <tr>
+
+                    <th>User</th>
+
+                    <th>Email</th>
+
+                    <th>Country</th>
+
+                    <th>Account Type</th>
+
+                    <th>Balance</th>
+
+                    <th>Role</th>
+
+                    <th>Created</th>
+
+                    <!-- NEW -->
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="usersTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="loading"
+                    >
+                        Loading users...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
         </table>
+
     </div>
+
 </section>
 
-<section class="section">
-    <div class="section-header"><div><h2><i class="fa-solid fa-wallet"></i> Pending Deposits</h2><p>Approve or reject deposit requests.</p></div></div>
-    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
-    <div class="table-wrapper"><table>
-        <thead><tr><th>User</th><th>Amount</th><th>Description</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="depositsTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
-    </table></div>
-</section>
+
+<!-- ======================================================
+     PENDING DEPOSITS
+====================================================== -->
 
 <section class="section">
-    <div class="section-header"><div><h2><i class="fa-solid fa-money-bill-transfer"></i> Pending Withdrawals</h2><p>Approve or reject withdrawal requests.</p></div></div>
-    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
-    <div class="table-wrapper"><table>
-        <thead><tr><th>User</th><th>Amount</th><th>Method / Destination</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="withdrawalsTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
-    </table></div>
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                <i class="fa-solid fa-wallet"></i>
+                Pending Deposits
+            </h2>
+
+            <p>
+                Approve or reject deposit requests.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-scroll-hint">
+
+        <i class="fa-solid fa-arrows-left-right"></i>
+
+        Swipe horizontally to view all columns
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>User</th>
+
+                    <th>Amount</th>
+
+                    <th>Description</th>
+
+                    <th>Date</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="depositsTableBody">
+
+                <tr>
+
+                    <td colspan="6">
+                        Loading...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </section>
 
-<section class="section">
-    <div class="section-header"><div><h2><i class="fa-solid fa-chart-pie"></i> Pending Investments</h2><p>Approve or reject investment requests.</p></div></div>
-    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
-    <div class="table-wrapper"><table>
-        <thead><tr><th>User</th><th>Amount</th><th>Plan</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="investmentsTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
-    </table></div>
-</section>
+
+<!-- ======================================================
+     PENDING WITHDRAWALS
+====================================================== -->
 
 <section class="section">
-    <div class="section-header"><div><h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Admin Credits</h2><p>Virtual-money credits made by administrators.</p></div></div>
-    <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> Swipe horizontally to view all columns</div>
-    <div class="table-wrapper"><table>
-        <thead><tr><th>User</th><th>Amount</th><th>Balance After</th><th>Description</th><th>Date</th></tr></thead>
-        <tbody id="transactionsTableBody"><tr><td colspan="5">Loading...</td></tr></tbody>
-    </table></div>
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                <i class="fa-solid fa-money-bill-transfer"></i>
+                Pending Withdrawals
+            </h2>
+
+            <p>
+                Approve or reject withdrawal requests.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-scroll-hint">
+
+        <i class="fa-solid fa-arrows-left-right"></i>
+
+        Swipe horizontally to view all columns
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>User</th>
+
+                    <th>Amount</th>
+
+                    <th>Method / Destination</th>
+
+                    <th>Date</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="withdrawalsTableBody">
+
+                <tr>
+
+                    <td colspan="6">
+                        Loading...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </section>
+
+
+<!-- ======================================================
+     PENDING INVESTMENTS
+====================================================== -->
+
+<section class="section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                <i class="fa-solid fa-chart-pie"></i>
+                Pending Investments
+            </h2>
+
+            <p>
+                Approve or reject investment requests.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-scroll-hint">
+
+        <i class="fa-solid fa-arrows-left-right"></i>
+
+        Swipe horizontally to view all columns
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>User</th>
+
+                    <th>Amount</th>
+
+                    <th>Plan</th>
+
+                    <th>Date</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="investmentsTableBody">
+
+                <tr>
+
+                    <td colspan="6">
+                        Loading...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     RECENT ADMIN CREDITS
+====================================================== -->
+
+<section class="section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Recent Admin Credits
+            </h2>
+
+            <p>
+                Virtual-money credits made by administrators.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-scroll-hint">
+
+        <i class="fa-solid fa-arrows-left-right"></i>
+
+        Swipe horizontally to view all columns
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>User</th>
+
+                    <th>Amount</th>
+
+                    <th>Balance After</th>
+
+                    <th>Description</th>
+
+                    <th>Date</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="transactionsTableBody">
+
+                <tr>
+
+                    <td colspan="5">
+                        Loading...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
 
 </main>
 
+
+<!-- ======================================================
+     SCRIPTS
+====================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="supabase.js"></script>
+
 <script src="admin-dashboard.js"></script>
+
 </body>
 </html>

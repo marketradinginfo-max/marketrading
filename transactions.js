@@ -24,6 +24,37 @@ function formatMoney(amount) {
 
 
 // ------------------------------------------------------
+// NORMALIZE TRANSACTION TYPE
+// ------------------------------------------------------
+
+function normalizeTransactionType(type) {
+
+    return String(type || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[_-]+/g, " ")
+        .replace(/\s+/g, " ");
+}
+
+
+// ------------------------------------------------------
+// CHECK IF TRANSACTION IS ADMIN CREDIT
+// ------------------------------------------------------
+
+function isAdminCredit(transaction) {
+
+    const type = normalizeTransactionType(
+        transaction?.type
+    );
+
+    return (
+        type === "admin credit" ||
+        type === "admincredit"
+    );
+}
+
+
+// ------------------------------------------------------
 // INIT
 // ------------------------------------------------------
 
@@ -37,6 +68,7 @@ async function initTransactions() {
         } = await supabaseClient.auth.getSession();
 
         if (sessionError || !session) {
+
             window.location.href = "login.html";
             return;
         }
@@ -46,17 +78,19 @@ async function initTransactions() {
         const transactionsBody =
             document.getElementById("transactionsBody");
 
+
         // --------------------------------------------------
         // LOAD USER TRANSACTIONS
-        // ADMIN CREDIT IS EXCLUDED FROM THE DATABASE QUERY
         // --------------------------------------------------
 
         const { data, error } = await supabaseClient
             .from("transactions")
             .select("*")
             .eq("user_id", userId)
-            .neq("type", "admin_credit")
-            .order("created_at", { ascending: false });
+            .order("created_at", {
+                ascending: false
+            });
+
 
         if (error) {
 
@@ -79,17 +113,26 @@ async function initTransactions() {
             return;
         }
 
+
         // --------------------------------------------------
-        // EXTRA SECURITY FILTER
-        // EVEN IF ADMIN CREDIT IS RETURNED FOR ANY REASON,
-        // IT WILL NEVER BE DISPLAYED TO THE USER.
+        // HIDE ADMIN CREDITS
+        // --------------------------------------------------
+        // This works whether the database contains:
+        //
+        // admin_credit
+        // admin credit
+        // Admin credit
+        // ADMIN CREDIT
+        // admin-credit
+        //
+        // Admin credits remain in Supabase.
+        // They are simply not shown to the user.
         // --------------------------------------------------
 
         allTransactions = (data || []).filter(
-            transaction =>
-                String(transaction.type || "").toLowerCase()
-                !== "admin_credit"
+            transaction => !isAdminCredit(transaction)
         );
+
 
         renderTransactions();
 
@@ -116,25 +159,33 @@ function renderTransactions() {
         return;
     }
 
+
     // --------------------------------------------------
-    // NEVER ALLOW ADMIN CREDIT INTO THE DISPLAY
+    // NEVER DISPLAY ADMIN CREDIT
     // --------------------------------------------------
 
     const visibleTransactions =
         allTransactions.filter(
-            transaction =>
-                String(transaction.type || "").toLowerCase()
-                !== "admin_credit"
+            transaction => !isAdminCredit(transaction)
         );
+
+
+    // --------------------------------------------------
+    // APPLY FILTER
+    // --------------------------------------------------
 
     const filtered =
         activeFilter === "all"
             ? visibleTransactions
             : visibleTransactions.filter(
                 transaction =>
-                    String(transaction.type || "").toLowerCase()
-                    === activeFilter
+                    normalizeTransactionType(
+                        transaction.type
+                    ) === normalizeTransactionType(
+                        activeFilter
+                    )
             );
+
 
     // --------------------------------------------------
     // NO TRANSACTIONS
@@ -153,7 +204,9 @@ function renderTransactions() {
         return;
     }
 
+
     transactionsBody.innerHTML = "";
+
 
     // --------------------------------------------------
     // DISPLAY TRANSACTIONS
@@ -164,7 +217,10 @@ function renderTransactions() {
         const row =
             document.createElement("tr");
 
+
+        // --------------------------------------------------
         // DATE
+        // --------------------------------------------------
 
         const date =
             transaction.created_at
@@ -180,30 +236,44 @@ function renderTransactions() {
                 : "-";
 
 
+        // --------------------------------------------------
         // TYPE
+        // --------------------------------------------------
 
-        const typeLabel =
-            (transaction.type || "transaction")
-                .replace(/_/g, " ")
-                .replace(
-                    /^\w/,
-                    character =>
-                        character.toUpperCase()
-                );
+        let typeLabel =
+            normalizeTransactionType(
+                transaction.type || "transaction"
+            );
 
 
+        typeLabel =
+            typeLabel.replace(
+                /^\w/,
+                character =>
+                    character.toUpperCase()
+            );
+
+
+        // --------------------------------------------------
         // STATUS
+        // --------------------------------------------------
 
         const status =
             transaction.status || "pending";
 
 
+        // --------------------------------------------------
         // ROW
+        // --------------------------------------------------
 
         row.innerHTML = `
-            <td>${escapeHtmlLocal(date)}</td>
+            <td>
+                ${escapeHtmlLocal(date)}
+            </td>
 
-            <td>${escapeHtmlLocal(typeLabel)}</td>
+            <td>
+                ${escapeHtmlLocal(typeLabel)}
+            </td>
 
             <td>
                 ${escapeHtmlLocal(
@@ -225,6 +295,7 @@ function renderTransactions() {
                 )}
             </td>
         `;
+
 
         transactionsBody.appendChild(row);
 
@@ -258,6 +329,7 @@ document.addEventListener(
         const filterButtons =
             document.querySelectorAll(".filter-btn");
 
+
         filterButtons.forEach(button => {
 
             button.addEventListener(
@@ -269,12 +341,16 @@ document.addEventListener(
                             item.classList.remove("active")
                     );
 
+
                     button.classList.add("active");
+
 
                     activeFilter =
                         button.dataset.filter || "all";
 
+
                     renderTransactions();
+
                 }
             );
 
@@ -295,9 +371,11 @@ document.addEventListener(
         const logoutBtn =
             document.getElementById("logoutBtn");
 
+
         if (!logoutBtn) {
             return;
         }
+
 
         logoutBtn.addEventListener(
             "click",
@@ -305,8 +383,10 @@ document.addEventListener(
 
                 event.preventDefault();
 
+
                 const { error } =
                     await supabaseClient.auth.signOut();
+
 
                 if (error) {
 
@@ -315,15 +395,19 @@ document.addEventListener(
                         error
                     );
 
+
                     alert(
                         "Logout failed. Please try again."
                     );
 
+
                     return;
                 }
 
+
                 window.location.href =
                     "login.html";
+
             }
         );
 
