@@ -55,11 +55,6 @@ function isAdminCredit(transaction) {
         transaction.description
     );
 
-    /*
-     * Hide admin credit regardless of capitalization
-     * or whether it uses _, -, or spaces.
-     */
-
     const adminCreditTypes = [
         "admin credit",
         "admincredit",
@@ -74,15 +69,6 @@ function isAdminCredit(transaction) {
         return true;
     }
 
-
-    /*
-     * Also check the description.
-     *
-     * This protects against situations where the
-     * transaction type is "credit" but the description
-     * says "Admin credit".
-     */
-
     const adminCreditDescriptionWords = [
         "admin credit",
         "admin credited",
@@ -96,6 +82,48 @@ function isAdminCredit(transaction) {
         phrase =>
             description.includes(phrase)
     );
+}
+
+
+// ------------------------------------------------------
+// USER-FACING TRANSACTION TYPE
+// ------------------------------------------------------
+
+function getUserTransactionType(transaction) {
+
+    if (isAdminCredit(transaction)) {
+
+        // IMPORTANT:
+        // Admin credit is displayed to the user
+        // as a normal Deposit.
+
+        return "deposit";
+    }
+
+    return normalizeTransactionType(
+        transaction?.type || "transaction"
+    );
+}
+
+
+// ------------------------------------------------------
+// USER-FACING DESCRIPTION
+// ------------------------------------------------------
+
+function getUserTransactionDescription(transaction) {
+
+    if (!transaction) {
+        return "-";
+    }
+
+    if (isAdminCredit(transaction)) {
+
+        // Never expose the admin-credit wording.
+
+        return "Deposit";
+    }
+
+    return transaction.description || "-";
 }
 
 
@@ -131,7 +159,7 @@ async function initTransactions() {
 
 
         // --------------------------------------------------
-        // LOAD USER TRANSACTIONS
+        // LOAD ONLY CURRENT USER TRANSACTIONS
         // --------------------------------------------------
 
         const {
@@ -170,29 +198,20 @@ async function initTransactions() {
 
 
         // --------------------------------------------------
-        // REMOVE ADMIN CREDITS
+        // KEEP ADMIN CREDITS
+        // --------------------------------------------------
+        //
+        // We DO NOT remove admin credits anymore.
+        //
+        // They will be converted to "Deposit"
+        // when displayed to the user.
         // --------------------------------------------------
 
-        allTransactions = (data || []).filter(
-            transaction =>
-                !isAdminCredit(transaction)
-        );
+        allTransactions = data || [];
 
-
-        // --------------------------------------------------
-        // DEBUG
-        // --------------------------------------------------
-        // This shows in the browser console what was
-        // removed. You can remove this section later.
-        // --------------------------------------------------
 
         console.log(
-            "Transactions loaded:",
-            data || []
-        );
-
-        console.log(
-            "Transactions visible to user:",
+            "User transactions loaded:",
             allTransactions
         );
 
@@ -228,30 +247,29 @@ function renderTransactions() {
 
 
     // --------------------------------------------------
-    // SAFETY FILTER
-    // --------------------------------------------------
-
-    const visibleTransactions =
-        allTransactions.filter(
-            transaction =>
-                !isAdminCredit(transaction)
-        );
-
-
-    // --------------------------------------------------
     // APPLY FILTER
     // --------------------------------------------------
 
     const filtered =
         activeFilter === "all"
-            ? visibleTransactions
-            : visibleTransactions.filter(
-                transaction =>
-                    normalizeTransactionType(
-                        transaction.type
-                    ) === normalizeTransactionType(
-                        activeFilter
-                    )
+
+            ? allTransactions
+
+            : allTransactions.filter(
+                transaction => {
+
+                    const userType =
+                        getUserTransactionType(
+                            transaction
+                        );
+
+                    return (
+                        userType ===
+                        normalizeTransactionType(
+                            activeFilter
+                        )
+                    );
+                }
             );
 
 
@@ -309,9 +327,8 @@ function renderTransactions() {
         // --------------------------------------------------
 
         let typeLabel =
-            normalizeTransactionType(
-                transaction.type ||
-                "transaction"
+            getUserTransactionType(
+                transaction
             );
 
 
@@ -320,6 +337,16 @@ function renderTransactions() {
                 /^\w/,
                 character =>
                     character.toUpperCase()
+            );
+
+
+        // --------------------------------------------------
+        // DESCRIPTION
+        // --------------------------------------------------
+
+        const description =
+            getUserTransactionDescription(
+                transaction
             );
 
 
@@ -347,10 +374,7 @@ function renderTransactions() {
             </td>
 
             <td>
-                ${escapeHtmlLocal(
-                    transaction.description ||
-                    "-"
-                )}
+                ${escapeHtmlLocal(description)}
             </td>
 
             <td>
