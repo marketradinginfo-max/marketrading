@@ -1,13 +1,13 @@
 // ==========================================
 // MARKETRADING - DEPOSIT.JS
-// PAYPAL + DEPOSIT HISTORY
+// PAYPAL DEPOSIT SYSTEM
 // ==========================================
 
 "use strict";
 
 let currentUserId = null;
 let selectedMethod = "PayPal";
-let paypalRendered = false;
+let paymentInProgress = false;
 
 
 // ------------------------------------------------------
@@ -31,14 +31,76 @@ function formatMoney(amount) {
 
 function showPaymentMessage(message, type = "info") {
 
-    const box = document.getElementById("paymentMessage");
+    const box =
+        document.getElementById("paymentMessage");
 
     if (!box) return;
 
     box.textContent = message;
+
     box.style.display = "block";
 
     box.className = type;
+}
+
+
+// ------------------------------------------------------
+// HIDE PAYPAL UI
+// ------------------------------------------------------
+
+function hidePayPalUI() {
+
+    const paypalCheckout =
+        document.getElementById("paypalCheckout");
+
+    if (paypalCheckout) {
+
+        paypalCheckout.style.display = "none";
+    }
+
+    const paypalContainer =
+        document.getElementById(
+            "paypal-button-container"
+        );
+
+    if (paypalContainer) {
+
+        paypalContainer.innerHTML = "";
+    }
+}
+
+
+// ------------------------------------------------------
+// GET CURRENT USER
+// ------------------------------------------------------
+
+async function getCurrentUser() {
+
+    const {
+        data: { session },
+        error
+    } =
+        await supabaseClient.auth.getSession();
+
+    if (error) {
+
+        console.error(
+            "Session error:",
+            error
+        );
+
+        return null;
+    }
+
+    if (!session) {
+
+        return null;
+    }
+
+    currentUserId =
+        session.user.id;
+
+    return session.user;
 }
 
 
@@ -48,19 +110,18 @@ function showPaymentMessage(message, type = "info") {
 
 async function initDeposit() {
 
-    const {
-        data: { session },
-        error: sessionError
-    } = await supabaseClient.auth.getSession();
+    hidePayPalUI();
 
-    if (sessionError || !session) {
+    const user =
+        await getCurrentUser();
 
-        window.location.href = "login.html";
+    if (!user) {
+
+        window.location.href =
+            "login.html";
 
         return;
     }
-
-    currentUserId = session.user.id;
 
 
     // --------------------------------------------------
@@ -70,11 +131,12 @@ async function initDeposit() {
     const {
         data: profile,
         error: profileError
-    } = await supabaseClient
-        .from("profiles")
-        .select("balance")
-        .eq("id", currentUserId)
-        .maybeSingle();
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select("balance")
+            .eq("id", currentUserId)
+            .maybeSingle();
 
 
     if (profileError) {
@@ -87,14 +149,18 @@ async function initDeposit() {
 
 
     const balanceElement =
-        document.getElementById("currentBalance");
+        document.getElementById(
+            "currentBalance"
+        );
 
 
     if (balanceElement) {
 
         balanceElement.textContent =
             formatMoney(
-                profile ? profile.balance : 0
+                profile
+                    ? profile.balance
+                    : 0
             );
     }
 
@@ -107,10 +173,10 @@ async function initDeposit() {
 
 
     // --------------------------------------------------
-    // WAIT FOR PAYPAL SDK
+    // CHECK IF USER RETURNED FROM PAYPAL
     // --------------------------------------------------
 
-    waitForPayPal();
+    await handlePayPalReturn();
 }
 
 
@@ -126,442 +192,566 @@ function setupMethodSelection() {
 
     methodCards.forEach(card => {
 
-        card.addEventListener("click", () => {
+        card.addEventListener(
+            "click",
+            () => {
 
-            methodCards.forEach(c =>
-                c.classList.remove("active")
-            );
-
-
-            card.classList.add("active");
-
-
-            selectedMethod =
-                card.dataset.method ||
-                card.querySelector("h3")
-                    .textContent
-                    .trim();
-
-
-            const paypalCheckout =
-                document.getElementById(
-                    "paypalCheckout"
+                methodCards.forEach(
+                    c =>
+                        c.classList.remove(
+                            "active"
+                        )
                 );
 
 
-            const depositSubmitBtn =
-                document.getElementById(
-                    "depositSubmitBtn"
+                card.classList.add(
+                    "active"
                 );
 
 
-            // ------------------------------------------
-            // PAYPAL
-            // ------------------------------------------
-
-            if (selectedMethod === "PayPal") {
-
-                if (paypalCheckout) {
-
-                    paypalCheckout.style.display =
-                        "block";
-                }
+                selectedMethod =
+                    card.dataset.method ||
+                    card
+                        .querySelector("h3")
+                        ?.textContent
+                        .trim() ||
+                    "";
 
 
-                if (depositSubmitBtn) {
+                console.log(
+                    "Selected payment method:",
+                    selectedMethod
+                );
 
-                    depositSubmitBtn.style.display =
-                        "none";
-                }
 
-
-                waitForPayPal();
-
-                return;
+                hidePayPalUI();
             }
-
-
-            // ------------------------------------------
-            // OTHER PAYMENT METHODS
-            // ------------------------------------------
-
-            if (paypalCheckout) {
-
-                paypalCheckout.style.display =
-                    "none";
-            }
-
-
-            if (depositSubmitBtn) {
-
-                depositSubmitBtn.style.display =
-                    "block";
-
-                depositSubmitBtn.textContent =
-                    "Continue";
-            }
-        });
+        );
     });
 }
 
 
 // ------------------------------------------------------
-// WAIT FOR PAYPAL SDK
+// START PAYPAL PAYMENT
 // ------------------------------------------------------
 
-function waitForPayPal() {
+async function startPayPalPayment() {
 
-    if (selectedMethod !== "PayPal") {
+    if (paymentInProgress) {
+
         return;
     }
 
+
+    const amountInput =
+        document.getElementById(
+            "depositAmount"
+        );
+
+
+    const currencyInput =
+        document.getElementById(
+            "depositCurrency"
+        );
+
+
+    const referenceInput =
+        document.getElementById(
+            "depositReference"
+        );
+
+
+    const submitButton =
+        document.getElementById(
+            "depositSubmitBtn"
+        );
+
+
+    const amount =
+        Number(
+            amountInput?.value
+        );
+
+
+    const currency =
+        currencyInput?.value ||
+        "USD";
+
+
+    const reference =
+        referenceInput?.value.trim() ||
+        "";
+
+
+    // --------------------------------------------------
+    // VALIDATE AMOUNT
+    // --------------------------------------------------
 
     if (
-        typeof window.paypal !==
-        "undefined"
+        !Number.isFinite(amount) ||
+        amount <= 0
     ) {
 
-        renderPayPalButtons();
+        showPaymentMessage(
+            "Please enter a valid deposit amount.",
+            "error"
+        );
 
         return;
     }
 
 
-    setTimeout(
-        waitForPayPal,
-        300
+    // --------------------------------------------------
+    // PAYPAL USD ONLY
+    // --------------------------------------------------
+
+    if (currency !== "USD") {
+
+        showPaymentMessage(
+            "PayPal deposits are currently available in USD only.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    // --------------------------------------------------
+    // LOGIN CHECK
+    // --------------------------------------------------
+
+    const user =
+        await getCurrentUser();
+
+
+    if (!user) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+    }
+
+
+    paymentInProgress = true;
+
+
+    if (submitButton) {
+
+        submitButton.disabled = true;
+
+        submitButton.textContent =
+            "Connecting to PayPal...";
+    }
+
+
+    showPaymentMessage(
+        "Preparing your PayPal payment...",
+        "info"
     );
+
+
+    try {
+
+        console.log(
+            "Creating PayPal order..."
+        );
+
+
+        // ------------------------------------------------
+        // CREATE PAYPAL ORDER
+        // ------------------------------------------------
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.functions.invoke(
+                "create-paypal-order",
+                {
+                    body: {
+                        amount: amount,
+                        currency: currency,
+                        reference: reference
+                    }
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Create PayPal order error:",
+                error
+            );
+
+            throw new Error(
+                error.message ||
+                "Unable to create PayPal payment."
+            );
+        }
+
+
+        console.log(
+            "PayPal order response:",
+            data
+        );
+
+
+        if (
+            !data ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data?.error ||
+                "Unable to create PayPal payment."
+            );
+        }
+
+
+        const orderId =
+            data.orderId;
+
+
+        const approvalUrl =
+            data.approvalUrl;
+
+
+        if (!orderId) {
+
+            throw new Error(
+                "PayPal order ID was not returned."
+            );
+        }
+
+
+        if (!approvalUrl) {
+
+            throw new Error(
+                "PayPal checkout URL was not returned."
+            );
+        }
+
+
+        // ------------------------------------------------
+        // SAVE PAYMENT INFORMATION
+        // ------------------------------------------------
+
+        sessionStorage.setItem(
+            "marketrading_paypal_payment",
+            JSON.stringify({
+                orderId:
+                    orderId,
+
+                amount:
+                    amount,
+
+                currency:
+                    currency,
+
+                reference:
+                    reference,
+
+                createdAt:
+                    Date.now()
+            })
+        );
+
+
+        // ------------------------------------------------
+        // REDIRECT TO PAYPAL
+        // ------------------------------------------------
+
+        showPaymentMessage(
+            "Redirecting you to PayPal...",
+            "success"
+        );
+
+
+        console.log(
+            "Redirecting to PayPal:",
+            approvalUrl
+        );
+
+
+        window.location.href =
+            approvalUrl;
+
+    } catch (error) {
+
+        console.error(
+            "PayPal payment error:",
+            error
+        );
+
+
+        showPaymentMessage(
+            error.message ||
+            "Unable to start PayPal payment.",
+            "error"
+        );
+
+
+        paymentInProgress = false;
+
+
+        if (submitButton) {
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                "Continue";
+        }
+    }
 }
 
 
 // ------------------------------------------------------
-// RENDER PAYPAL BUTTONS
+// HANDLE RETURN FROM PAYPAL
 // ------------------------------------------------------
 
-function renderPayPalButtons() {
+async function handlePayPalReturn() {
 
-    if (paypalRendered) {
-        return;
-    }
-
-
-    const container =
-        document.getElementById(
-            "paypal-button-container"
+    const params =
+        new URLSearchParams(
+            window.location.search
         );
 
 
-    if (!container) {
+    const paypalStatus =
+        params.get("paypal");
+
+
+    // --------------------------------------------------
+    // NOTHING TO PROCESS
+    // --------------------------------------------------
+
+    if (!paypalStatus) {
+
         return;
     }
 
+
+    // --------------------------------------------------
+    // PAYMENT CANCELLED
+    // --------------------------------------------------
 
     if (
-        typeof window.paypal ===
-        "undefined"
+        paypalStatus ===
+        "cancel"
     ) {
+
+        showPaymentMessage(
+            "PayPal payment was cancelled.",
+            "error"
+        );
+
+
+        // Remove URL parameters
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+
         return;
     }
 
 
-    paypalRendered = true;
+    // --------------------------------------------------
+    // PAYMENT SUCCESS
+    // --------------------------------------------------
+
+    if (
+        paypalStatus !==
+        "success"
+    ) {
+
+        return;
+    }
 
 
-    window.paypal.Buttons({
+    // --------------------------------------------------
+    // GET PAYPAL ORDER ID
+    // --------------------------------------------------
 
-        // ----------------------------------------------
-        // CREATE ORDER
-        // ----------------------------------------------
+    let orderId =
+        params.get("token");
 
-        createOrder: async function () {
 
-            const amountInput =
-                document.getElementById(
-                    "depositAmount"
+    // --------------------------------------------------
+    // FALLBACK TO SESSION STORAGE
+    // --------------------------------------------------
+
+    if (!orderId) {
+
+        try {
+
+            const saved =
+                sessionStorage.getItem(
+                    "marketrading_paypal_payment"
                 );
 
 
-            const currencyInput =
-                document.getElementById(
-                    "depositCurrency"
-                );
+            if (saved) {
+
+                const payment =
+                    JSON.parse(saved);
 
 
-            const amount =
-                Number(
-                    amountInput?.value
-                );
-
-
-            const currency =
-                currencyInput?.value ||
-                "USD";
-
-
-            if (
-                !Number.isFinite(amount) ||
-                amount <= 0
-            ) {
-
-                showPaymentMessage(
-                    "Please enter a valid deposit amount.",
-                    "error"
-                );
-
-                throw new Error(
-                    "Invalid deposit amount."
-                );
+                orderId =
+                    payment.orderId;
             }
 
-
-            // ------------------------------------------
-            // PAYPAL FUNCTION ONLY ACCEPTS USD
-            // ------------------------------------------
-
-            if (currency !== "USD") {
-
-                showPaymentMessage(
-                    "PayPal deposits are currently available in USD only.",
-                    "error"
-                );
-
-                throw new Error(
-                    "PayPal currently supports USD only."
-                );
-            }
-
-
-            showPaymentMessage(
-                "Creating your PayPal payment...",
-                "info"
-            );
-
-
-            // ------------------------------------------
-            // GET CURRENT SESSION
-            // ------------------------------------------
-
-            const {
-                data: {
-                    session
-                }
-            } =
-                await supabaseClient
-                    .auth
-                    .getSession();
-
-
-            if (!session) {
-
-                window.location.href =
-                    "login.html";
-
-                throw new Error(
-                    "You must be logged in."
-                );
-            }
-
-
-            // ------------------------------------------
-            // CALL SUPABASE EDGE FUNCTION
-            // ------------------------------------------
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient.functions.invoke(
-                    "create-paypal-order",
-                    {
-                        body: {
-                            amount: amount
-                        }
-                    }
-                );
-
-
-            if (error) {
-
-                console.error(
-                    "Create PayPal order error:",
-                    error
-                );
-
-                throw new Error(
-                    error.message ||
-                    "Unable to create PayPal order."
-                );
-            }
-
-
-            if (
-                !data ||
-                !data.success ||
-                !data.orderId
-            ) {
-
-                console.error(
-                    "Invalid PayPal response:",
-                    data
-                );
-
-                throw new Error(
-                    data?.error ||
-                    "PayPal order could not be created."
-                );
-            }
-
-
-            showPaymentMessage(
-                "PayPal order created. Complete your payment.",
-                "info"
-            );
-
-
-            return data.orderId;
-        },
-
-
-        // ----------------------------------------------
-        // APPROVE
-        // ----------------------------------------------
-
-        onApprove: async function (
-            data
-        ) {
-
-            showPaymentMessage(
-                "Payment approved. Confirming payment...",
-                "info"
-            );
-
-
-            try {
-
-                const {
-                    data: result,
-                    error
-                } =
-                    await supabaseClient
-                        .functions
-                        .invoke(
-                            "capture-paypal-order",
-                            {
-                                body: {
-                                    orderId:
-                                        data.orderID
-                                }
-                            }
-                        );
-
-
-                if (error) {
-
-                    console.error(
-                        "Capture PayPal error:",
-                        error
-                    );
-
-                    throw new Error(
-                        error.message ||
-                        "Unable to confirm PayPal payment."
-                    );
-                }
-
-
-                if (
-                    !result ||
-                    !result.success
-                ) {
-
-                    throw new Error(
-                        result?.error ||
-                        "PayPal payment could not be confirmed."
-                    );
-                }
-
-
-                // --------------------------------------
-                // SUCCESS
-                // --------------------------------------
-
-                showPaymentMessage(
-                    `Payment successful! ${formatMoney(result.amount)} has been added to your account.`,
-                    "success"
-                );
-
-
-                alert(
-                    `Payment successful!\n\n${formatMoney(result.amount)} has been added to your Marketrading balance.`
-                );
-
-
-                // --------------------------------------
-                // REFRESH BALANCE
-                // --------------------------------------
-
-                await refreshBalance();
-
-
-                // --------------------------------------
-                // REFRESH HISTORY
-                // --------------------------------------
-
-                await loadDepositHistory();
-
-            } catch (error) {
-
-                console.error(
-                    "PayPal capture error:",
-                    error
-                );
-
-
-                showPaymentMessage(
-                    error.message ||
-                    "Payment could not be completed.",
-                    "error"
-                );
-            }
-        },
-
-
-        // ----------------------------------------------
-        // CANCEL
-        // ----------------------------------------------
-
-        onCancel: function () {
-
-            showPaymentMessage(
-                "PayPal payment was cancelled.",
-                "error"
-            );
-        },
-
-
-        // ----------------------------------------------
-        // ERROR
-        // ----------------------------------------------
-
-        onError: function (
-            error
-        ) {
+        } catch (error) {
 
             console.error(
-                "PayPal button error:",
+                "Unable to read saved PayPal payment:",
                 error
+            );
+        }
+    }
+
+
+    if (!orderId) {
+
+        showPaymentMessage(
+            "Payment returned from PayPal, but the order ID could not be found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    // --------------------------------------------------
+    // SHOW PROCESSING
+    // --------------------------------------------------
+
+    showPaymentMessage(
+        "Payment received from PayPal. Confirming your payment...",
+        "info"
+    );
+
+
+    try {
+
+        // ------------------------------------------------
+        // CAPTURE PAYMENT
+        // ------------------------------------------------
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.functions.invoke(
+                "capture-paypal-order",
+                {
+                    body: {
+                        orderId:
+                            orderId
+                    }
+                }
             );
 
 
-            showPaymentMessage(
-                "PayPal encountered an error. Please try again.",
-                "error"
+        if (error) {
+
+            console.error(
+                "Capture PayPal error:",
+                error
+            );
+
+            throw new Error(
+                error.message ||
+                "Unable to confirm PayPal payment."
             );
         }
 
-    }).render(
-        "#paypal-button-container"
-    );
+
+        console.log(
+            "PayPal capture response:",
+            data
+        );
+
+
+        if (
+            !data ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data?.error ||
+                "PayPal payment could not be confirmed."
+            );
+        }
+
+
+        // ------------------------------------------------
+        // SUCCESS
+        // ------------------------------------------------
+
+        showPaymentMessage(
+            `Payment successful! ${formatMoney(data.amount)} has been added to your account.`,
+            "success"
+        );
+
+
+        // ------------------------------------------------
+        // REMOVE SAVED PAYMENT
+        // ------------------------------------------------
+
+        sessionStorage.removeItem(
+            "marketrading_paypal_payment"
+        );
+
+
+        // ------------------------------------------------
+        // CLEAN URL
+        // ------------------------------------------------
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+
+        // ------------------------------------------------
+        // REFRESH BALANCE
+        // ------------------------------------------------
+
+        await refreshBalance();
+
+
+        // ------------------------------------------------
+        // REFRESH HISTORY
+        // ------------------------------------------------
+
+        await loadDepositHistory();
+
+
+        alert(
+            `Payment successful!\n\n${formatMoney(data.amount)} has been added to your Marketrading balance.`
+        );
+
+    } catch (error) {
+
+        console.error(
+            "PayPal return/capture error:",
+            error
+        );
+
+
+        showPaymentMessage(
+            error.message ||
+            "We could not confirm your PayPal payment.",
+            "error"
+        );
+    }
 }
 
 
@@ -572,6 +762,7 @@ function renderPayPalButtons() {
 async function refreshBalance() {
 
     if (!currentUserId) {
+
         return;
     }
 
@@ -617,7 +808,7 @@ async function refreshBalance() {
 
 
 // ------------------------------------------------------
-// NORMAL DEPOSIT FORM
+// DEPOSIT FORM
 // ------------------------------------------------------
 
 function setupDepositForm() {
@@ -629,6 +820,11 @@ function setupDepositForm() {
 
 
     if (!depositForm) {
+
+        console.error(
+            "depositForm not found."
+        );
+
         return;
     }
 
@@ -640,18 +836,24 @@ function setupDepositForm() {
             e.preventDefault();
 
 
-            // ------------------------------------------
-            // PAYPAL IS HANDLED BY PAYPAL BUTTON
-            // ------------------------------------------
+            // --------------------------------------------
+            // PAYPAL
+            // --------------------------------------------
 
             if (
                 selectedMethod ===
                 "PayPal"
             ) {
 
+                await startPayPalPayment();
+
                 return;
             }
 
+
+            // --------------------------------------------
+            // OTHER METHODS
+            // --------------------------------------------
 
             if (!currentUserId) {
 
@@ -684,18 +886,8 @@ function setupDepositForm() {
             }
 
 
-            /*
-             * Mobile Money and Card Payment
-             *
-             * We are NOT automatically crediting
-             * the account here.
-             *
-             * Those payment methods will be connected
-             * to PesaPal separately.
-             */
-
             alert(
-                `${selectedMethod} is not connected yet. We will connect it to PesaPal next.`
+                `${selectedMethod} is not connected yet. We will connect it to PesaPal later.`
             );
         }
     );
@@ -798,14 +990,9 @@ async function loadDepositHistory() {
                     ).toLocaleDateString(
                         "en-US",
                         {
-                            day:
-                                "numeric",
-
-                            month:
-                                "long",
-
-                            year:
-                                "numeric"
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric"
                         }
                     )
                     : "-";
@@ -841,12 +1028,10 @@ async function loadDepositHistory() {
                 </td>
 
                 <td class="${status}">
-                    ${status
-                        .replace(
-                            /^\w/,
-                            c =>
-                                c.toUpperCase()
-                        )}
+                    ${status.replace(
+                        /^\w/,
+                        c => c.toUpperCase()
+                    )}
                 </td>
             `;
 
@@ -866,6 +1051,11 @@ async function loadDepositHistory() {
 document.addEventListener(
     "DOMContentLoaded",
     () => {
+
+        console.log(
+            "MARKETRADING DEPOSIT.JS LOADED"
+        );
+
 
         setupMethodSelection();
 
