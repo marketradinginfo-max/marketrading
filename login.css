@@ -1,178 +1,461 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-body{
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-min-height:100vh;
-
-background:linear-gradient(135deg,#0f172a,#1d4ed8,#0f172a);
-
+html,
+body {
+    width: 100%;
+    min-height: 100%;
 }
 
-.container{
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
 
-width:100%;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:20px;
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(37, 99, 235, 0.65),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 75%,
+            rgba(29, 78, 216, 0.55),
+            transparent 40%
+        ),
+        linear-gradient(
+            135deg,
+            #071a45 0%,
+            #123b9c 45%,
+            #0b1d4d 100%
+        );
 
+    color: #222;
 }
 
-.login-box{
-
-width:420px;
-background:#ffffff;
-padding:40px;
-border-radius:20px;
-box-shadow:0 15px 40px rgba(0,0,0,.4);
-
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.logo{
+.login-box {
+    width: 100%;
+    max-width: 520px;
 
-text-align:center;
-margin-bottom:35px;
+    background: #ffffff;
 
+    padding: 55px 48px 48px;
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.30),
+        0 10px 30px rgba(0, 0, 0, 0.15);
+
+    position: relative;
 }
 
-.logo h1{
+/* ==============================
+   LOGO / WELCOME
+============================== */
 
-font-size:36px;
-color:#1d4ed8;
-
+.logo {
+    text-align: center;
+    margin-bottom: 48px;
 }
 
-.logo p{
-
-margin-top:10px;
-color:#666;
-
+.logo h1 {
+    font-size: 48px;
+    line-height: 1.1;
+    font-weight: 700;
+    color: #2855c7;
+    letter-spacing: -1.5px;
 }
 
-.input-box{
-
-margin-bottom:20px;
-
+.logo p {
+    margin-top: 14px;
+    font-size: 28px;
+    font-weight: 400;
+    color: #666;
 }
 
-.input-box label{
+/* ==============================
+   INPUTS
+============================== */
 
-display:block;
-margin-bottom:8px;
-font-weight:600;
-color:#333;
-
+.input-box {
+    margin-bottom: 28px;
 }
 
-.input-box input{
+.input-box label {
+    display: block;
 
-width:100%;
-padding:14px;
-border:1px solid #ccc;
-border-radius:10px;
-font-size:16px;
-outline:none;
-transition:.3s;
+    margin-bottom: 12px;
 
+    font-size: 20px;
+    font-weight: 600;
+
+    color: #303030;
 }
 
-.input-box input:focus{
+.input-box input {
+    width: 100%;
 
-border-color:#1d4ed8;
+    height: 68px;
 
+    padding: 0 20px;
+
+    border: 2px solid #d0d0d0;
+    border-radius: 17px;
+
+    background: #fff;
+
+    color: #222;
+
+    font-size: 18px;
+
+    outline: none;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
-.options{
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:25px;
-font-size:14px;
-
+.input-box input::placeholder {
+    color: #aaa;
+    opacity: 1;
 }
 
-.options a{
+.input-box input:focus {
+    border-color: #2855c7;
 
-text-decoration:none;
-color:#1d4ed8;
-font-weight:600;
-
+    box-shadow:
+        0 0 0 4px rgba(40, 85, 199, 0.10);
 }
 
-.options a:hover{
+/* ==============================
+   OPTIONS
+============================== */
 
-text-decoration:underline;
+.options {
+    width: 100%;
 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 2px;
+    margin-bottom: 30px;
+
+    font-size: 16px;
 }
 
-button{
+.options label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
 
-width:100%;
-padding:15px;
-background:#facc15;
-border:none;
-border-radius:10px;
-font-size:17px;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
+    color: #222;
 
+    cursor: pointer;
 }
 
-button:hover{
+.options input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
 
-background:#eab308;
-transform:translateY(-2px);
+    margin: 0;
 
+    appearance: none;
+    -webkit-appearance: none;
+
+    border: 2px solid #999;
+    border-radius: 7px;
+
+    background: #fff;
+
+    cursor: pointer;
+
+    position: relative;
 }
 
-.register{
-
-text-align:center;
-margin-top:25px;
-
+.options input[type="checkbox"]:checked {
+    background: #2855c7;
+    border-color: #2855c7;
 }
 
-.register a{
+.options input[type="checkbox"]:checked::after {
+    content: "✓";
 
-text-decoration:none;
-color:#1d4ed8;
-font-weight:bold;
+    position: absolute;
 
+    left: 4px;
+    top: -2px;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.register a:hover{
+.options a {
+    color: #2855c7;
 
-text-decoration:underline;
+    text-decoration: none;
 
+    font-weight: 600;
+
+    white-space: nowrap;
 }
 
-@media(max-width:500px){
-
-.login-box{
-
-width:100%;
-padding:30px 20px;
-
+.options a:hover {
+    text-decoration: underline;
 }
 
-.logo h1{
+/* ==============================
+   LOGIN BUTTON
+============================== */
 
-font-size:30px;
+button {
+    width: 100%;
 
+    height: 68px;
+
+    border: none;
+    border-radius: 17px;
+
+    background: #facc15;
+
+    color: #ffffff;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(250, 204, 21, 0.20);
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
+button:hover {
+    background: #eab308;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(250, 204, 21, 0.30);
 }
 
+button:active {
+    transform: translateY(0);
+}
+
+/* ==============================
+   REGISTER
+============================== */
+
+.register {
+    text-align: center;
+
+    margin-top: 30px;
+
+    color: #222;
+
+    font-size: 18px;
+
+    line-height: 1.7;
+}
+
+.register a {
+    color: #2855c7;
+
+    text-decoration: none;
+
+    font-weight: 700;
+}
+
+.register a:hover {
+    text-decoration: underline;
+}
+
+/* ==============================
+   TABLET
+============================== */
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 25px 16px;
+    }
+
+    .login-box {
+        max-width: 500px;
+
+        padding: 45px 35px 40px;
+
+        border-radius: 25px;
+    }
+
+    .logo {
+        margin-bottom: 40px;
+    }
+
+    .logo h1 {
+        font-size: 40px;
+    }
+
+    .logo p {
+        font-size: 24px;
+    }
+
+    .input-box label {
+        font-size: 18px;
+    }
+
+    .input-box input {
+        height: 62px;
+        font-size: 17px;
+    }
+
+    button {
+        height: 62px;
+    }
+}
+
+/* ==============================
+   PHONE
+============================== */
+
+@media (max-width: 500px) {
+
+    body {
+        min-height: 100vh;
+
+        padding: 20px 12px;
+
+        align-items: flex-start;
+
+        padding-top: 55px;
+    }
+
+    .login-box {
+        width: 100%;
+
+        padding: 36px 22px 32px;
+
+        border-radius: 25px;
+    }
+
+    .logo {
+        margin-bottom: 34px;
+    }
+
+    .logo h1 {
+        font-size: 34px;
+        letter-spacing: -1px;
+    }
+
+    .logo p {
+        margin-top: 10px;
+
+        font-size: 22px;
+    }
+
+    .input-box {
+        margin-bottom: 23px;
+    }
+
+    .input-box label {
+        margin-bottom: 9px;
+
+        font-size: 17px;
+    }
+
+    .input-box input {
+        height: 58px;
+
+        padding: 0 16px;
+
+        border-radius: 14px;
+
+        font-size: 16px;
+    }
+
+    .options {
+        margin-bottom: 25px;
+
+        font-size: 14px;
+
+        gap: 10px;
+    }
+
+    .options input[type="checkbox"] {
+        width: 23px;
+        height: 23px;
+    }
+
+    .options a {
+        font-size: 14px;
+    }
+
+    button {
+        height: 60px;
+
+        border-radius: 14px;
+
+        font-size: 20px;
+    }
+
+    .register {
+        margin-top: 25px;
+
+        font-size: 16px;
+    }
+}
+
+/* ==============================
+   VERY SMALL PHONES
+============================== */
+
+@media (max-width: 360px) {
+
+    body {
+        padding-top: 25px;
+    }
+
+    .login-box {
+        padding: 30px 18px;
+    }
+
+    .logo h1 {
+        font-size: 30px;
+    }
+
+    .logo p {
+        font-size: 20px;
+    }
+
+    .options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .options a {
+        align-self: flex-end;
+    }
+}
