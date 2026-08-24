@@ -10,199 +10,272 @@
 
 <link rel="stylesheet" href="deposit.css">
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    rel="stylesheet"
+>
 
 </head>
 
-
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 <script src="script.js"></script>
-<script src="deposit.js"></script>
 
-
+<!-- PayPal SDK -->
+<script
+    src="https://www.paypal.com/sdk/js?components=buttons&currency=USD"
+    defer
+></script>
 
 <div class="deposit-container">
 
+    <!-- HEADER -->
 
-<div class="header">
+    <div class="header">
 
-<li>
-    <a heref="deposit.html">
-<i class="fa-solid fa-wallet"></i>Deposit
-</a>
-</li>
+        <li>
+            <a href="deposit.html">
+                <i class="fa-solid fa-wallet"></i>
+                Deposit
+            </a>
+        </li>
 
-<p>Add money to your Marketrading account</p>
+        <p>Add money to your Marketrading account</p>
+
+    </div>
+
+
+    <!-- CURRENT BALANCE -->
+
+    <div class="balance-card">
+
+        <h3>Current Balance</h3>
+
+        <h2 id="currentBalance">$0.00</h2>
+
+    </div>
+
+
+    <!-- DEPOSIT BOX -->
+
+    <div class="deposit-box">
+
+        <h2>Select Deposit Method</h2>
+
+
+        <!-- PAYMENT METHODS -->
+
+        <div class="methods">
+
+
+            <!-- PAYPAL -->
+
+            <div
+                class="method active"
+                data-method="PayPal"
+                id="paypalMethod"
+            >
+
+                <i class="fa-brands fa-paypal"></i>
+
+                <h3>PayPal</h3>
+
+                <p>Pay securely with PayPal</p>
+
+            </div>
+
+
+            <!-- MOBILE MONEY -->
+
+            <div
+                class="method"
+                data-method="Mobile Money"
+                id="mobileMoneyMethod"
+            >
+
+                <i class="fa-solid fa-mobile-screen-button"></i>
+
+                <h3>Mobile Money</h3>
+
+                <p>MTN / Airtel Money</p>
+
+            </div>
+
+
+            <!-- CARD -->
+
+            <div
+                class="method"
+                data-method="Card Payment"
+                id="cardMethod"
+            >
+
+                <i class="fa-solid fa-credit-card"></i>
+
+                <h3>Card Payment</h3>
+
+                <p>Visa / Mastercard</p>
+
+            </div>
+
+        </div>
+
+
+        <!-- AMOUNT -->
+
+        <form id="depositForm">
+
+            <label for="depositAmount">
+                Amount
+            </label>
+
+            <input
+                id="depositAmount"
+                type="number"
+                name="amount"
+                min="1"
+                step="0.01"
+                placeholder="Enter amount"
+                required
+            >
+
+
+            <!-- CURRENCY -->
+
+            <label for="depositCurrency">
+                Currency
+            </label>
+
+            <select
+                id="depositCurrency"
+                name="currency"
+            >
+
+                <option value="USD">
+                    USD
+                </option>
+
+                <option value="EUR">
+                    EUR
+                </option>
+
+                <option value="UGX">
+                    UGX
+                </option>
+
+            </select>
+
+
+            <!-- REFERENCE -->
+
+            <label for="depositReference">
+                Payment Reference
+            </label>
+
+            <input
+                id="depositReference"
+                type="text"
+                name="reference"
+                placeholder="Transaction ID"
+            >
+
+
+            <!-- NORMAL BUTTON -->
+
+            <button
+                type="submit"
+                id="depositSubmitBtn"
+            >
+                Continue
+            </button>
+
+        </form>
+
+
+        <!-- PAYPAL CHECKOUT -->
+
+        <div
+            id="paypalCheckout"
+            style="display:none; margin-top:20px;"
+        >
+
+            <h3>
+                Complete your PayPal payment
+            </h3>
+
+            <p>
+                You will be redirected to PayPal to securely
+                complete your payment.
+            </p>
+
+            <div id="paypal-button-container"></div>
+
+        </div>
+
+
+        <!-- PAYMENT MESSAGE -->
+
+        <div
+            id="paymentMessage"
+            style="display:none;"
+        ></div>
+
+    </div>
+
+
+    <!-- DEPOSIT HISTORY -->
+
+    <div class="history">
+
+        <h2>Recent Deposits</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Amount</th>
+
+                    <th>Method</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="depositHistoryBody">
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        class="loading"
+                    >
+                        Loading deposits...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
 
+<!-- DEPOSIT JAVASCRIPT -->
 
-<div class="balance-card">
-
-<h3>Current Balance</h3>
-
-<h2 id="currentBalance">$0.00</h2>
-
-</div>
-
-
-
-
-<div class="deposit-box">
-
-
-<h2>Select Deposit Method</h2>
-
-
-<div class="methods">
-
-
-<div class="method active" data-method="Bank Transfer">
-
-<i class="fa-solid fa-building-columns"></i>
-
-<h3>Bank Transfer</h3>
-
-<p>Direct bank payment</p>
-
-</div>
-
-
-
-<div class="method" data-method="Card Payment">
-
-<i class="fa-solid fa-credit-card"></i>
-
-<h3>Card Payment</h3>
-
-<p>Visa / Mastercard</p>
-
-</div>
-
-
-
-<div class="method" data-method="Crypto">
-
-<i class="fa-brands fa-bitcoin"></i>
-
-<h3>Crypto</h3>
-
-<p>USDT / BTC</p>
-
-</div>
-
-
-</div>
-
-
-
-
-
-<form id="depositForm">
-
-
-<label>
-Amount
-</label>
-
-<input
-id="depositAmount"
-type="number"
-name="amount"
-min="1"
-step="0.01"
-placeholder="Enter amount"
-required>
-
-
-
-<label>
-Currency
-</label>
-
-<select id="depositCurrency" name="currency">
-
-<option>USD</option>
-
-<option>EUR</option>
-
-<option>UGX</option>
-
-</select>
-
-
-
-
-<label>
-Payment Reference
-</label>
-
-
-<input
-id="depositReference"
-type="text"
-name="reference"
-placeholder="Transaction ID">
-
-
-
-<button type="submit" id="depositSubmitBtn">
-
-Confirm Deposit
-
-</button>
-
-
-</form>
-
-
-
-</div>
-
-
-
-<div class="history">
-
-
-<h2>Recent Deposits</h2>
-
-
-<table>
-
-<thead>
-<tr>
-
-<th>Date</th>
-
-<th>Amount</th>
-
-<th>Method</th>
-
-<th>Status</th>
-
-</tr>
-</thead>
-
-<tbody id="depositHistoryBody">
-
-<tr>
-<td colspan="4" class="loading">Loading deposits...</td>
-</tr>
-
-</tbody>
-
-</table>
-
-
-</div>
-
-
-
-</div>
-
+<script src="deposit.js"></script>
 
 </body>
 
