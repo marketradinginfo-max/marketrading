@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,19 +27,24 @@
             <form id="loginForm">
 
                 <div class="input-box">
-                    <label for="email">Email Address</label>
+
+                    <label for="login">Username or Email</label>
 
                     <input
-                        id="email"
-                        type="email"
+                        id="login"
+                        type="text"
                         name="email"
-                        placeholder="Enter your email"
-                        autocomplete="email"
+                        placeholder="Enter your username or email"
+                        autocomplete="username"
+                        autocapitalize="none"
+                        spellcheck="false"
                         required
                     >
+
                 </div>
 
                 <div class="input-box">
+
                     <label for="password">Password</label>
 
                     <input
@@ -50,6 +55,7 @@
                         autocomplete="current-password"
                         required
                     >
+
                 </div>
 
                 <div class="options">
@@ -59,7 +65,9 @@
                         Remember Me
                     </label>
 
-                    <a href="#">Forgot Password?</a>
+                    <a href="#">
+                        Forgot Password?
+                    </a>
 
                 </div>
 
@@ -68,11 +76,13 @@
                 </button>
 
                 <p class="register">
+
                     Don't have an account?
 
                     <a href="register.html">
                         Create Account
                     </a>
+
                 </p>
 
             </form>
@@ -94,3 +104,5 @@
 </body>
 
 </html>
+```
+
