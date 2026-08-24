@@ -12,7 +12,6 @@
 
     <title>Marketrading | PayPal Deposit</title>
 
-    <!-- Font Awesome -->
     <link
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         rel="stylesheet"
@@ -20,20 +19,11 @@
 
     <style>
 
-        /* ==========================================
-           RESET
-           ========================================== */
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-
-
-        /* ==========================================
-           BODY
-           ========================================== */
 
         body {
             font-family:
@@ -46,114 +36,65 @@
 
             background: #1e2a3d;
             color: #ffffff;
-
             min-height: 100vh;
         }
-
-
-        /* ==========================================
-           MAIN CONTAINER
-           ========================================== */
 
         .paypal-container {
             width: 100%;
             max-width: 780px;
-
             margin: 0 auto;
-
-            padding:
-                45px
-                25px
-                60px;
+            padding: 45px 25px 60px;
         }
-
-
-        /* ==========================================
-           BACK BUTTON
-           ========================================== */
 
         .back-button {
             display: inline-flex;
-
             align-items: center;
             gap: 10px;
 
             color: #ffffff;
-
             text-decoration: none;
 
             font-size: 17px;
             font-weight: 700;
 
             margin-bottom: 45px;
-
-            transition: opacity 0.2s ease;
         }
 
         .back-button:hover {
             opacity: 0.75;
         }
 
-
-        /* ==========================================
-           PAGE HEADER
-           ========================================== */
-
         .page-header {
             text-align: center;
-
             margin-bottom: 35px;
         }
 
-
         .paypal-logo {
             display: flex;
-
             align-items: center;
             justify-content: center;
-
             margin-bottom: 15px;
         }
 
-
         .paypal-logo i {
             font-size: 70px;
-
             color: #ffd21c;
-
-            filter:
-                drop-shadow(
-                    0 0 12px
-                    rgba(255, 210, 28, 0.25)
-                );
         }
-
 
         .page-header h1 {
             font-size: 36px;
-
             font-weight: 800;
-
             margin-bottom: 8px;
         }
 
-
         .page-header p {
             color: #aeb9ce;
-
             font-size: 18px;
         }
 
-
-        /* ==========================================
-           PAYMENT CARD
-           ========================================== */
-
         .payment-card {
             background: #0f172a;
-
             border-radius: 24px;
-
             padding: 35px 30px;
 
             box-shadow:
@@ -161,106 +102,103 @@
                 rgba(0, 0, 0, 0.25);
         }
 
-
-        /* ==========================================
-           FORM GROUP
-           ========================================== */
-
         .form-group {
             margin-bottom: 25px;
         }
-
 
         .form-group label {
             display: block;
 
             font-size: 19px;
-
             font-weight: 700;
 
             margin-bottom: 11px;
         }
 
-
-        /* ==========================================
-           INPUTS
-           ========================================== */
-
         .form-group input,
         .form-group select {
             width: 100%;
-
             height: 62px;
 
-            padding:
-                0
-                18px;
+            padding: 0 18px;
 
             border: none;
-
             border-radius: 15px;
 
             background: #34445b;
-
             color: #ffffff;
 
             font-size: 18px;
-
             outline: none;
-
-            appearance: auto;
         }
-
 
         .form-group input::placeholder {
             color: #aeb7c6;
         }
 
-
         .form-group input:focus,
         .form-group select:focus {
-            box-shadow:
-                0 0 0 2px
-                #ffd21c;
+            box-shadow: 0 0 0 2px #ffd21c;
         }
 
+        /* CONTINUE BUTTON */
 
-        /* ==========================================
-           PAYPAL CHECKOUT
-           ========================================== */
+        .continue-button {
+            width: 100%;
+            height: 62px;
+
+            margin-top: 5px;
+
+            border: none;
+            border-radius: 15px;
+
+            background: #fbbf24;
+            color: #07111f;
+
+            font-size: 18px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .continue-button:hover {
+            background: #facc15;
+            transform: translateY(-2px);
+        }
+
+        .continue-button:active {
+            transform: scale(0.98);
+        }
+
+        /* PAYPAL AREA HIDDEN UNTIL CONTINUE */
 
         .paypal-section {
+            display: none;
             margin-top: 30px;
         }
-
 
         .paypal-section h3 {
             text-align: center;
 
             font-size: 21px;
-
             font-weight: 700;
 
             margin-bottom: 20px;
         }
 
-
         #paypal-button-container {
             width: 100%;
-
             min-height: 45px;
         }
-
-
-        /* ==========================================
-           MESSAGE
-           ========================================== */
 
         #paymentMessage {
             display: none;
 
             margin-top: 20px;
-
             padding: 14px 16px;
 
             border-radius: 12px;
@@ -268,14 +206,8 @@
             text-align: center;
 
             font-size: 15px;
-
             line-height: 1.5;
         }
-
-
-        /* ==========================================
-           SECURITY
-           ========================================== */
 
         .security-note {
             display: flex;
@@ -292,15 +224,9 @@
             margin-top: 25px;
         }
 
-
         .security-note i {
             color: #ffd21c;
         }
-
-
-        /* ==========================================
-           LOADING
-           ========================================== */
 
         .paypal-loading {
             display: none;
@@ -314,72 +240,42 @@
             margin-top: 15px;
         }
 
-
-        .paypal-loading i {
-            margin-right: 6px;
-        }
-
-
-        /* ==========================================
-           MOBILE
-           ========================================== */
-
         @media (max-width: 600px) {
 
             .paypal-container {
-                padding:
-                    25px
-                    15px
-                    45px;
+                padding: 25px 15px 45px;
             }
-
 
             .back-button {
                 margin-bottom: 35px;
-
                 font-size: 16px;
             }
-
 
             .paypal-logo i {
                 font-size: 58px;
             }
 
-
             .page-header h1 {
                 font-size: 30px;
             }
-
 
             .page-header p {
                 font-size: 16px;
             }
 
-
             .payment-card {
-                padding:
-                    28px
-                    18px;
-
+                padding: 28px 18px;
                 border-radius: 20px;
             }
-
 
             .form-group label {
                 font-size: 18px;
             }
 
-
             .form-group input,
             .form-group select {
                 height: 58px;
-
                 font-size: 17px;
-            }
-
-
-            .paypal-section h3 {
-                font-size: 19px;
             }
 
         }
@@ -392,354 +288,330 @@
 <body>
 
 
-    <!-- ==========================================
-         SUPABASE
-         ========================================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+<script src="supabase.js"></script>
 
-    <script src="supabase.js"></script>
-
-    <script src="script.js"></script>
+<script src="script.js"></script>
 
 
-    <!-- ==========================================
-         PAYPAL SDK
-         ========================================== -->
-
-    <!--
-        Keep your existing PayPal SDK configuration here.
-
-        If your current project already has a PayPal
-        client ID configured, keep that configuration.
-    -->
-
-    <script
-        src="https://www.paypal.com/sdk/js?components=buttons&currency=USD"
-        defer
-    ></script>
+<script
+    src="https://www.paypal.com/sdk/js?components=buttons&currency=USD"
+    defer
+></script>
 
 
-    <!-- ==========================================
-         MAIN
-         ========================================== -->
-
-    <div class="paypal-container">
+<div class="paypal-container">
 
 
-        <!-- ======================================
-             BACK
-             ====================================== -->
+    <a
+        href="deposit.html"
+        class="back-button"
+    >
 
-        <a
-            href="deposit.html"
-            class="back-button"
-        >
+        <i class="fa-solid fa-arrow-left"></i>
 
-            <i class="fa-solid fa-arrow-left"></i>
+        Back to Deposit
 
-            Back to Deposit
-
-        </a>
+    </a>
 
 
-        <!-- ======================================
-             HEADER
-             ====================================== -->
+    <div class="page-header">
 
-        <div class="page-header">
+        <div class="paypal-logo">
 
-            <div class="paypal-logo">
+            <i class="fa-brands fa-paypal"></i>
 
-                <i class="fa-brands fa-paypal"></i>
+        </div>
 
-            </div>
+        <h1>
+            PayPal Deposit
+        </h1>
+
+        <p>
+            Add money securely using PayPal
+        </p>
+
+    </div>
 
 
-            <h1>
-                PayPal Deposit
-            </h1>
+    <div class="payment-card">
 
 
-            <p>
-                Add money securely using PayPal
-            </p>
+        <!-- AMOUNT -->
+
+        <div class="form-group">
+
+            <label for="depositAmount">
+                Amount
+            </label>
+
+            <input
+                type="number"
+                id="depositAmount"
+                name="amount"
+                min="1"
+                step="0.01"
+                placeholder="Enter amount"
+                autocomplete="off"
+            >
 
         </div>
 
 
-        <!-- ======================================
-             PAYMENT CARD
-             ====================================== -->
+        <!-- CURRENCY -->
 
-        <div class="payment-card">
+        <div class="form-group">
 
+            <label for="depositCurrency">
+                Currency
+            </label>
 
-            <!-- ==================================
-                 AMOUNT
-                 ================================== -->
+            <select id="depositCurrency">
 
-            <div class="form-group">
+                <option value="USD">
+                    USD
+                </option>
 
-                <label for="depositAmount">
-                    Amount
-                </label>
+                <option value="EUR">
+                    EUR
+                </option>
 
+            </select>
 
-                <input
-                    type="number"
-                    id="depositAmount"
-                    name="amount"
-                    min="1"
-                    step="0.01"
-                    placeholder="Enter amount"
-                    autocomplete="off"
-                    required
-                >
-
-            </div>
+        </div>
 
 
-            <!-- ==================================
-                 CURRENCY
-                 ================================== -->
+        <!-- CONTINUE -->
 
-            <div class="form-group">
+        <button
+            type="button"
+            id="continuePaymentBtn"
+            class="continue-button"
+        >
 
-                <label for="depositCurrency">
-                    Currency
-                </label>
+            Continue
 
+            <i class="fa-solid fa-arrow-right"></i>
 
-                <select
-                    id="depositCurrency"
-                    name="currency"
-                >
-
-                    <option value="USD">
-                        USD
-                    </option>
-
-                    <option value="EUR">
-                        EUR
-                    </option>
-
-                </select>
-
-            </div>
+        </button>
 
 
-            <!-- ==================================
-                 PAYPAL
-                 ================================== -->
+        <!-- PAYPAL -->
 
-            <div class="paypal-section">
+        <div
+            class="paypal-section"
+            id="paypalSection"
+        >
 
-                <h3>
-                    Complete Payment
-                </h3>
-
-
-                <div
-                    id="paypal-button-container"
-                ></div>
-
-
-                <div
-                    id="paypalLoading"
-                    class="paypal-loading"
-                >
-
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-
-                    Loading PayPal...
-
-                </div>
-
-            </div>
-
-
-            <!-- ==================================
-                 PAYMENT MESSAGE
-                 ================================== -->
+            <h3>
+                Complete Payment
+            </h3>
 
             <div
-                id="paymentMessage"
+                id="paypal-button-container"
             ></div>
 
+            <div
+                id="paypalLoading"
+                class="paypal-loading"
+            >
 
-            <!-- ==================================
-                 SECURITY
-                 ================================== -->
+                <i class="fa-solid fa-spinner fa-spin"></i>
 
-            <div class="security-note">
-
-                <i class="fa-solid fa-lock"></i>
-
-                <span>
-                    Secure payment powered by PayPal
-                </span>
+                Loading PayPal...
 
             </div>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="paymentMessage"
+        ></div>
+
+
+        <div class="security-note">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <span>
+                Secure payment powered by PayPal
+            </span>
 
         </div>
 
     </div>
 
-
-    <!-- ==========================================
-         PAGE JAVASCRIPT
-         ========================================== -->
-
-    <script>
-
-        "use strict";
+</div>
 
 
-        document.addEventListener(
-            "DOMContentLoaded",
+<script>
+
+"use strict";
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const amountInput =
+            document.getElementById(
+                "depositAmount"
+            );
+
+        const currencySelect =
+            document.getElementById(
+                "depositCurrency"
+            );
+
+        const continueButton =
+            document.getElementById(
+                "continuePaymentBtn"
+            );
+
+        const paypalSection =
+            document.getElementById(
+                "paypalSection"
+            );
+
+        const message =
+            document.getElementById(
+                "paymentMessage"
+            );
+
+
+        /*
+         * Make the selected amount available
+         * to the PayPal payment code.
+         */
+
+        window.getPayPalDepositAmount =
             function () {
 
-                const amountInput =
-                    document.getElementById(
-                        "depositAmount"
+                return Number(
+                    amountInput.value || 0
+                );
+
+            };
+
+
+        window.getPayPalDepositCurrency =
+            function () {
+
+                return currencySelect.value;
+
+            };
+
+
+        window.showPayPalMessage =
+            function (
+                text,
+                success = false
+            ) {
+
+                message.style.display =
+                    "block";
+
+                message.textContent =
+                    text;
+
+                if (success) {
+
+                    message.style.background =
+                        "#163d2b";
+
+                    message.style.color =
+                        "#7ff0b0";
+
+                } else {
+
+                    message.style.background =
+                        "#3d2020";
+
+                    message.style.color =
+                        "#ff9b9b";
+
+                }
+
+            };
+
+
+        window.hidePayPalMessage =
+            function () {
+
+                message.style.display =
+                    "none";
+
+            };
+
+
+        /*
+         * CONTINUE BUTTON
+         */
+
+        continueButton.addEventListener(
+            "click",
+            function () {
+
+                const amount =
+                    Number(
+                        amountInput.value
                     );
 
 
-                const currencySelect =
-                    document.getElementById(
-                        "depositCurrency"
+                if (
+                    !amount ||
+                    amount < 1
+                ) {
+
+                    window.showPayPalMessage(
+                        "Please enter a valid amount."
                     );
 
+                    amountInput.focus();
 
-                const message =
-                    document.getElementById(
-                        "paymentMessage"
-                    );
+                    return;
+                }
 
 
-                const paypalLoading =
-                    document.getElementById(
-                        "paypalLoading"
-                    );
+                window.hidePayPalMessage();
 
 
                 /*
-                 * This page intentionally does NOT display
-                 * the previous payment-information message.
-                 *
-                 * The amount and currency are available to
-                 * the PayPal checkout code through:
-                 *
-                 * amountInput.value
-                 * currencySelect.value
+                 * Show PayPal only after
+                 * Continue is clicked.
                  */
 
-
-                window.getPayPalDepositAmount =
-                    function () {
-
-                        return Number(
-                            amountInput.value || 0
-                        );
-
-                    };
+                paypalSection.style.display =
+                    "block";
 
 
-                window.getPayPalDepositCurrency =
-                    function () {
-
-                        return currencySelect.value;
-
-                    };
+                continueButton.style.display =
+                    "none";
 
 
-                window.showPayPalMessage =
-                    function (
-                        text,
-                        success = false
-                    ) {
+                /*
+                 * Scroll smoothly to
+                 * the PayPal checkout.
+                 */
 
-                        if (!message) {
-                            return;
-                        }
-
-
-                        message.style.display =
-                            "block";
-
-
-                        message.textContent =
-                            text;
-
-
-                        if (success) {
-
-                            message.style.background =
-                                "#163d2b";
-
-                            message.style.color =
-                                "#7ff0b0";
-
-                        } else {
-
-                            message.style.background =
-                                "#3d2020";
-
-                            message.style.color =
-                                "#ff9b9b";
-
-                        }
-
-                    };
-
-
-                window.hidePayPalMessage =
-                    function () {
-
-                        if (!message) {
-                            return;
-                        }
-
-
-                        message.style.display =
-                            "none";
-
-                    };
-
-
-                window.showPayPalLoading =
-                    function () {
-
-                        if (paypalLoading) {
-
-                            paypalLoading.style.display =
-                                "block";
-
-                        }
-
-                    };
-
-
-                window.hidePayPalLoading =
-                    function () {
-
-                        if (paypalLoading) {
-
-                            paypalLoading.style.display =
-                                "none";
-
-                        }
-
-                    };
+                paypalSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
 
             }
 
         );
 
-    </script>
+    }
+
+);
+
+</script>
 
 
 </body>
