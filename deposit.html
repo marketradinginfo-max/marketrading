@@ -24,11 +24,6 @@
 <script src="supabase.js"></script>
 <script src="script.js"></script>
 
-<!-- PayPal SDK -->
-<script
-    src="https://www.paypal.com/sdk/js?components=buttons&currency=USD"
-    defer
-></script>
 
 <div class="deposit-container">
 
@@ -73,155 +68,76 @@
 
             <!-- PAYPAL -->
 
-            <div
-                class="method active"
-                data-method="PayPal"
-                id="paypalMethod"
+            <a
+                href="paypal-deposit.html"
+                class="method-link"
             >
 
-                <i class="fa-brands fa-paypal"></i>
+                <div
+                    class="method"
+                    data-method="PayPal"
+                    id="paypalMethod"
+                >
 
-                <h3>PayPal</h3>
+                    <i class="fa-brands fa-paypal"></i>
 
-                <p>Pay securely with PayPal</p>
+                    <h3>PayPal</h3>
 
-            </div>
+                    <p>Pay securely with PayPal</p>
+
+                </div>
+
+            </a>
 
 
             <!-- MOBILE MONEY -->
 
-            <div
-                class="method"
-                data-method="Mobile Money"
-                id="mobileMoneyMethod"
+            <a
+                href="mobile-money-deposit.html"
+                class="method-link"
             >
 
-                <i class="fa-solid fa-mobile-screen-button"></i>
+                <div
+                    class="method"
+                    data-method="Mobile Money"
+                    id="mobileMoneyMethod"
+                >
 
-                <h3>Mobile Money</h3>
+                    <i class="fa-solid fa-mobile-screen-button"></i>
 
-                <p>MTN / Airtel Money</p>
+                    <h3>Mobile Money</h3>
 
-            </div>
+                    <p>MTN / Airtel Money</p>
+
+                </div>
+
+            </a>
 
 
-            <!-- CARD -->
+            <!-- CARD PAYMENT -->
 
-            <div
-                class="method"
-                data-method="Card Payment"
-                id="cardMethod"
+            <a
+                href="card-deposit.html"
+                class="method-link"
             >
 
-                <i class="fa-solid fa-credit-card"></i>
+                <div
+                    class="method"
+                    data-method="Card Payment"
+                    id="cardMethod"
+                >
 
-                <h3>Card Payment</h3>
+                    <i class="fa-solid fa-credit-card"></i>
 
-                <p>Visa / Mastercard</p>
+                    <h3>Card Payment</h3>
 
-            </div>
+                    <p>Visa / Mastercard</p>
+
+                </div>
+
+            </a>
 
         </div>
-
-
-        <!-- AMOUNT -->
-
-        <form id="depositForm">
-
-            <label for="depositAmount">
-                Amount
-            </label>
-
-            <input
-                id="depositAmount"
-                type="number"
-                name="amount"
-                min="1"
-                step="0.01"
-                placeholder="Enter amount"
-                required
-            >
-
-
-            <!-- CURRENCY -->
-
-            <label for="depositCurrency">
-                Currency
-            </label>
-
-            <select
-                id="depositCurrency"
-                name="currency"
-            >
-
-                <option value="USD">
-                    USD
-                </option>
-
-                <option value="EUR">
-                    EUR
-                </option>
-
-                <option value="UGX">
-                    UGX
-                </option>
-
-            </select>
-
-
-            <!-- REFERENCE -->
-
-            <label for="depositReference">
-                Payment Reference
-            </label>
-
-            <input
-                id="depositReference"
-                type="text"
-                name="reference"
-                placeholder="Transaction ID"
-            >
-
-
-            <!-- NORMAL BUTTON -->
-
-            <button
-                type="submit"
-                id="depositSubmitBtn"
-            >
-                Continue
-            </button>
-
-        </form>
-
-
-        <!-- PAYPAL CHECKOUT -->
-
-        <div
-            id="paypalCheckout"
-            style="display:none; margin-top:20px;"
-        >
-
-            <h3>
-                Complete your PayPal payment
-            </h3>
-
-            <p>
-                You will be redirected to PayPal to securely
-                complete your payment.
-            </p>
-
-            <div id="paypal-button-container"></div>
-
-        </div>
-
-
-        <!-- PAYMENT MESSAGE -->
-
-        <div
-            id="paymentMessage"
-            style="display:none;"
-        ></div>
 
     </div>
 
@@ -239,11 +155,8 @@
                 <tr>
 
                     <th>Date</th>
-
                     <th>Amount</th>
-
                     <th>Method</th>
-
                     <th>Status</th>
 
                 </tr>

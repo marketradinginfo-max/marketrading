@@ -295,3 +295,29 @@ font-size:13px;
 }
 
 }
+/* ==========================================
+   PAYMENT METHOD LINKS
+   ========================================== */
+
+.method-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+}
+
+.method {
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.method:hover {
+    transform: translateY(-3px);
+}
+
+.method-link:active .method {
+    transform: scale(0.98);
+}
