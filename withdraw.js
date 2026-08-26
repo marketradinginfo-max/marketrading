@@ -1,15 +1,21 @@
-// ==========================================
+// ======================================================
 // MARKETRADING - WITHDRAW.JS
-// SECURE WITHDRAWAL VERSION
-// ==========================================
+// ======================================================
+
+"use strict";
+
+
+// ======================================================
+// GLOBAL VARIABLES
+// ======================================================
 
 let currentUserId = null;
 let currentBalance = 0;
 
 
-// ------------------------------------------------------
+// ======================================================
 // FORMAT MONEY
-// ------------------------------------------------------
+// ======================================================
 
 function formatMoney(amount) {
 
@@ -22,105 +28,118 @@ function formatMoney(amount) {
 }
 
 
-// ------------------------------------------------------
-// INIT
-// ------------------------------------------------------
+// ======================================================
+// INITIALIZE WITHDRAW PAGE
+// ======================================================
 
 async function initWithdraw() {
 
-    try {
+    // --------------------------------------------------
+    // CHECK LOGIN
+    // --------------------------------------------------
 
-        const {
-            data: { session },
-            error: sessionError
-        } = await supabaseClient.auth.getSession();
-
-
-        // --------------------------------------------------
-        // CHECK LOGIN
-        // --------------------------------------------------
-
-        if (sessionError || !session) {
-
-            window.location.href = "login.html";
-
-            return;
-        }
+    const {
+        data: { session },
+        error
+    } = await supabaseClient.auth.getSession();
 
 
-        currentUserId = session.user.id;
+    if (error || !session) {
+
+        window.location.href = "login.html";
+
+        return;
+    }
 
 
-        // --------------------------------------------------
-        // LOAD USER BALANCE
-        // --------------------------------------------------
+    // --------------------------------------------------
+    // SAVE USER ID
+    // --------------------------------------------------
 
-        const {
-            data: profile,
-            error: profileError
-        } = await supabaseClient
-            .from("profiles")
-            .select("balance")
-            .eq("id", currentUserId)
-            .maybeSingle();
+    currentUserId =
+        session.user.id;
 
 
-        if (profileError) {
+    // --------------------------------------------------
+    // LOAD PROFILE
+    // --------------------------------------------------
 
-            console.error(
-                "Error loading profile:",
-                profileError
-            );
-        }
-
-
-        currentBalance = profile
-            ? Number(profile.balance || 0)
-            : 0;
-
-
-        // --------------------------------------------------
-        // DISPLAY BALANCE
-        // --------------------------------------------------
-
-        const balanceElement =
-            document.getElementById("currentBalance");
+    const {
+        data: profile,
+        error: profileError
+    } = await supabaseClient
+        .from("profiles")
+        .select("balance")
+        .eq("id", currentUserId)
+        .maybeSingle();
 
 
-        if (balanceElement) {
-
-            balanceElement.textContent =
-                formatMoney(currentBalance);
-        }
-
-
-        // --------------------------------------------------
-        // LOAD WITHDRAWAL HISTORY
-        // --------------------------------------------------
-
-        await loadWithdrawHistory();
-
-
-    } catch (error) {
+    if (profileError) {
 
         console.error(
-            "Withdrawal initialization error:",
-            error
+            "Profile loading error:",
+            profileError
         );
+
+        return;
     }
+
+
+    if (!profile) {
+
+        console.error(
+            "User profile not found."
+        );
+
+        return;
+    }
+
+
+    // --------------------------------------------------
+    // SAVE BALANCE
+    // --------------------------------------------------
+
+    currentBalance =
+        Number(profile.balance || 0);
+
+
+    // --------------------------------------------------
+    // SHOW BALANCE
+    // --------------------------------------------------
+
+    const balanceElement =
+        document.getElementById(
+            "withdrawBalance"
+        );
+
+
+    if (balanceElement) {
+
+        balanceElement.textContent =
+            formatMoney(currentBalance);
+    }
+
+
+    // --------------------------------------------------
+    // LOAD WITHDRAWAL HISTORY
+    // --------------------------------------------------
+
+    await loadWithdrawHistory();
 }
 
 
-// ------------------------------------------------------
+// ======================================================
 // SUBMIT WITHDRAWAL
-// ------------------------------------------------------
+// ======================================================
 
 const withdrawForm =
     document.getElementById("withdrawForm");
 
 
 const withdrawSubmitBtn =
-    document.getElementById("withdrawSubmitBtn");
+    document.getElementById(
+        "withdrawSubmitBtn"
+    );
 
 
 if (withdrawForm) {
@@ -202,7 +221,7 @@ if (withdrawForm) {
             // VALIDATE AMOUNT
             // --------------------------------------------------
 
-            if (!amount || amount <= 0) {
+            if (!Number.isFinite(amount) || amount <= 0) {
 
                 alert(
                     "Please enter a valid withdrawal amount."
@@ -270,34 +289,21 @@ if (withdrawForm) {
 
                 withdrawSubmitBtn.style.cursor =
                     "not-allowed";
-
-                // Make processing button green
-                withdrawSubmitBtn.style.background =
-                    "#16a34a";
-
-                withdrawSubmitBtn.style.color =
-                    "#ffffff";
             }
 
 
             try {
 
-
                 // --------------------------------------------------
                 // SECURE WITHDRAWAL RPC
                 // --------------------------------------------------
                 //
-                // IMPORTANT:
-                // We do NOT directly insert into transactions.
+                // This creates the withdrawal as PENDING.
                 //
-                // The Supabase function:
+                // The user's balance is NOT deducted here.
                 //
-                // submit_withdrawal()
-                //
-                // checks the authenticated user,
-                // validates the amount,
-                // checks available balance,
-                // and creates the withdrawal.
+                // The admin_process_transaction() function
+                // handles approval/rejection later.
                 //
                 // --------------------------------------------------
 
@@ -331,13 +337,11 @@ if (withdrawForm) {
                         "Unable to submit withdrawal.";
 
 
-                    // Remove PostgreSQL function formatting
                     errorMessage =
-                        errorMessage
-                            .replace(
-                                /^.*ERROR:\s*/i,
-                                ""
-                            );
+                        errorMessage.replace(
+                            /^.*ERROR:\s*/i,
+                            ""
+                        );
 
 
                     alert(errorMessage);
@@ -358,7 +362,7 @@ if (withdrawForm) {
 
                 alert(
                     "Withdrawal request submitted successfully.\n\n" +
-                    "Your withdrawal is now being processed."
+                    "Your withdrawal is now pending."
                 );
 
 
@@ -392,7 +396,6 @@ if (withdrawForm) {
 
             } finally {
 
-
                 // --------------------------------------------------
                 // RESTORE BUTTON
                 // --------------------------------------------------
@@ -410,13 +413,6 @@ if (withdrawForm) {
 
                     withdrawSubmitBtn.style.cursor =
                         "pointer";
-
-                    // Return to your original CSS
-                    withdrawSubmitBtn.style.background =
-                        "";
-
-                    withdrawSubmitBtn.style.color =
-                        "";
                 }
             }
         }
@@ -424,9 +420,9 @@ if (withdrawForm) {
 }
 
 
-// ------------------------------------------------------
+// ======================================================
 // LOAD WITHDRAWAL HISTORY
-// ------------------------------------------------------
+// ======================================================
 
 async function loadWithdrawHistory() {
 
@@ -596,50 +592,45 @@ async function loadWithdrawHistory() {
         // STATUS
         // --------------------------------------------------
 
-        const status =
-            (
-                withdrawal.status ||
-                "processing"
+        const rawStatus =
+            String(
+                withdrawal.status || "pending"
             ).toLowerCase();
 
 
         let statusText =
-            "Processing";
+            "Pending";
 
 
         let statusClass =
-            "processing";
+            "pending";
 
 
         // --------------------------------------------------
-        // COMPLETED
+        // ACCEPTED
+        // --------------------------------------------------
+        //
+        // Our database function uses:
+        //
+        // accepted
+        //
+        // The user sees:
+        //
+        // Accepted
+        //
         // --------------------------------------------------
 
         if (
-            status === "completed"
+            rawStatus === "accepted" ||
+            rawStatus === "approved" ||
+            rawStatus === "completed"
         ) {
 
             statusText =
-                "Completed";
+                "Accepted";
 
             statusClass =
-                "completed";
-        }
-
-
-        // --------------------------------------------------
-        // APPROVED
-        // --------------------------------------------------
-
-        else if (
-            status === "approved"
-        ) {
-
-            statusText =
-                "Approved";
-
-            statusClass =
-                "approved";
+                "accepted";
         }
 
 
@@ -648,7 +639,7 @@ async function loadWithdrawHistory() {
         // --------------------------------------------------
 
         else if (
-            status === "rejected"
+            rawStatus === "rejected"
         ) {
 
             statusText =
@@ -660,32 +651,16 @@ async function loadWithdrawHistory() {
 
 
         // --------------------------------------------------
-        // CANCELLED
-        // --------------------------------------------------
-
-        else if (
-            status === "cancelled"
-        ) {
-
-            statusText =
-                "Cancelled";
-
-            statusClass =
-                "cancelled";
-        }
-
-
-        // --------------------------------------------------
-        // PROCESSING / PENDING
+        // PENDING
         // --------------------------------------------------
 
         else {
 
             statusText =
-                "Processing";
+                "Pending";
 
             statusClass =
-                "processing";
+                "pending";
         }
 
 
@@ -740,7 +715,7 @@ async function loadWithdrawHistory() {
 
 
         // --------------------------------------------------
-        // ADD CELLS TO ROW
+        // ADD CELLS
         // --------------------------------------------------
 
         row.appendChild(
@@ -760,20 +735,17 @@ async function loadWithdrawHistory() {
         );
 
 
-        // --------------------------------------------------
-        // ADD ROW TO TABLE
-        // --------------------------------------------------
-
         withdrawHistoryBody.appendChild(
             row
         );
+
     });
 }
 
 
-// ------------------------------------------------------
+// ======================================================
 // LOGOUT
-// ------------------------------------------------------
+// ======================================================
 
 const logoutBtn =
     document.getElementById(
@@ -819,9 +791,9 @@ if (logoutBtn) {
 }
 
 
-// ------------------------------------------------------
+// ======================================================
 // START
-// ------------------------------------------------------
+// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",

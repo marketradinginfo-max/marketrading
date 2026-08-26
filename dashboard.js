@@ -170,6 +170,67 @@ function formatMoney(amount) {
 
 
 // ==========================================
+// GET USER-FACING TRANSACTION TYPE
+// ==========================================
+//
+// IMPORTANT:
+// Admin credits are shown to normal users
+// simply as "Deposit".
+//
+// Internally they can still remain identifiable
+// as admin credits/source=admin in Supabase.
+//
+// ==========================================
+
+function getUserTransactionType(type) {
+
+    const normalizedType =
+        String(type || "")
+            .toLowerCase()
+            .trim();
+
+
+    // Admin credit = Deposit for the user
+    if (
+        normalizedType === "admin_credit" ||
+        normalizedType === "admin credit" ||
+        normalizedType === "deposit"
+    ) {
+        return "Deposit";
+    }
+
+
+    if (
+        normalizedType === "withdrawal" ||
+        normalizedType === "withdraw"
+    ) {
+        return "Withdrawal";
+    }
+
+
+    if (normalizedType === "investment") {
+        return "Investment";
+    }
+
+
+    if (normalizedType === "profit") {
+        return "Profit";
+    }
+
+
+    if (normalizedType === "loss") {
+        return "Loss";
+    }
+
+
+    // Fallback for other transaction types
+    return String(type || "Transaction")
+        .replace(/_/g, " ")
+        .replace(/^\w/, c => c.toUpperCase());
+}
+
+
+// ==========================================
 // LOAD TRANSACTIONS + STATS
 // ==========================================
 
@@ -195,12 +256,17 @@ async function loadTransactions(userId) {
         .from("transactions")
         .select("*")
         .eq("user_id", userId)
-        .order("created_at", { ascending: false });
+        .order("created_at", {
+            ascending: false
+        });
 
 
     if (error) {
 
-        console.error("Error loading transactions:", error);
+        console.error(
+            "Error loading transactions:",
+            error
+        );
 
         if (transactionTableBody) {
 
@@ -217,62 +283,133 @@ async function loadTransactions(userId) {
     }
 
 
-    const allTransactions = transactions || [];
+    const allTransactions =
+        transactions || [];
 
 
-    // --------------------------------------------------
-    // STATS
-    // --------------------------------------------------
+    // ==================================================
+    // TOTAL DEPOSITS
+    // ==================================================
+    //
+    // Count:
+    //
+    // 1. Normal deposits
+    // 2. Admin credits
+    //
+    // Both are displayed to the user as "Deposit".
+    //
+    // Only COMPLETED transactions are counted.
+    //
+    // ==================================================
 
-    const totalDeposits = allTransactions
-        .filter(
-            t =>
-                t.type === "deposit" &&
-                t.status === "completed"
-        )
-        .reduce(
-            (total, t) => total + Number(t.amount || 0),
-            0
-        );
+    const totalDeposits =
+        allTransactions
+            .filter(t => {
 
-    const activeInvestments = allTransactions
-        .filter(
-            t =>
-                t.type === "investment" &&
-                (t.status === "active" || t.status === "pending")
-        ).length;
+                const type =
+                    String(t.type || "")
+                        .toLowerCase()
+                        .trim();
 
-    const totalProfit = allTransactions
-        .filter(t => t.type === "profit")
-        .reduce(
-            (total, t) => total + Number(t.amount || 0),
-            0
-        );
+                const status =
+                    String(t.status || "")
+                        .toLowerCase()
+                        .trim();
 
+
+                const isDeposit =
+                    type === "deposit" ||
+                    type === "admin_credit" ||
+                    type === "admin credit";
+
+
+                const isCompleted =
+                    status === "completed";
+
+
+                return (
+                    isDeposit &&
+                    isCompleted
+                );
+            })
+            .reduce(
+                (total, t) =>
+                    total +
+                    Number(t.amount || 0),
+                0
+            );
+
+
+    // ==================================================
+    // ACTIVE INVESTMENTS
+    // ==================================================
+
+    const activeInvestments =
+        allTransactions
+            .filter(
+                t =>
+                    t.type === "investment" &&
+                    (
+                        t.status === "active" ||
+                        t.status === "pending"
+                    )
+            )
+            .length;
+
+
+    // ==================================================
+    // TOTAL PROFIT
+    // ==================================================
+
+    const totalProfit =
+        allTransactions
+            .filter(
+                t =>
+                    String(t.type || "")
+                        .toLowerCase()
+                        .trim() === "profit"
+            )
+            .reduce(
+                (total, t) =>
+                    total +
+                    Number(t.amount || 0),
+                0
+            );
+
+
+    // ==================================================
+    // UPDATE DASHBOARD CARDS
+    // ==================================================
 
     if (totalDepositsElement) {
+
         totalDepositsElement.textContent =
             formatMoney(totalDeposits);
     }
 
+
     if (activeInvestmentsElement) {
+
         activeInvestmentsElement.textContent =
             String(activeInvestments);
     }
 
+
     if (totalProfitElement) {
+
         totalProfitElement.textContent =
             formatMoney(totalProfit);
     }
 
 
-    // --------------------------------------------------
-    // TABLE
-    // --------------------------------------------------
+    // ==================================================
+    // TRANSACTION TABLE
+    // ==================================================
 
     if (!transactionTableBody) {
         return;
     }
+
 
     if (!allTransactions.length) {
 
@@ -287,31 +424,67 @@ async function loadTransactions(userId) {
         return;
     }
 
+
     transactionTableBody.innerHTML = "";
+
 
     allTransactions.forEach(t => {
 
-        const row = document.createElement("tr");
+        const row =
+            document.createElement("tr");
+
+
+        // ----------------------------------------------
+        // DATE
+        // ----------------------------------------------
 
         const date =
             t.created_at
-                ? new Date(t.created_at).toLocaleDateString()
+                ? new Date(
+                    t.created_at
+                ).toLocaleDateString()
                 : "-";
 
+
+        // ----------------------------------------------
+        // USER-FACING TYPE
+        // ----------------------------------------------
+
         const typeLabel =
-            (t.type || "transaction")
+            getUserTransactionType(t.type);
+
+
+        // ----------------------------------------------
+        // STATUS
+        // ----------------------------------------------
+
+        const status =
+            String(
+                t.status || "pending"
+            )
                 .replace(/_/g, " ")
-                .replace(/^\w/, c => c.toUpperCase());
+                .replace(
+                    /^\w/,
+                    c => c.toUpperCase()
+                );
+
+
+        // ----------------------------------------------
+        // CREATE ROW
+        // ----------------------------------------------
 
         row.innerHTML = `
             <td>${date}</td>
+
             <td>${typeLabel}</td>
+
             <td>${formatMoney(t.amount)}</td>
+
             <td class="status ${t.status || "pending"}">
-                ${(t.status || "pending")
-                    .replace(/^\w/, c => c.toUpperCase())}
+                ${status}
             </td>
         `;
+
 
         transactionTableBody.appendChild(row);
     });
@@ -344,7 +517,8 @@ if (logoutBtn) {
 
             const {
                 error
-            } = await supabaseClient.auth.signOut();
+            } =
+                await supabaseClient.auth.signOut();
 
 
             if (error) {
@@ -367,4 +541,3 @@ if (logoutBtn) {
         }
     );
 }
-
