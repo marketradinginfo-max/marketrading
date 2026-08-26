@@ -87,9 +87,7 @@ async function requireAdmin() {
 
     if (!client) {
 
-        location.replace(
-            "login.html"
-        );
+        location.replace("login.html");
 
         return false;
     }
@@ -107,9 +105,7 @@ async function requireAdmin() {
         !data?.session
     ) {
 
-        location.replace(
-            "login.html"
-        );
+        location.replace("login.html");
 
         return false;
     }
@@ -148,16 +144,13 @@ async function requireAdmin() {
         String(profile.role || "").toLowerCase() !== "admin"
     ) {
 
-        location.replace(
-            "dashboard.html"
-        );
+        location.replace("dashboard.html");
 
         return false;
     }
 
 
-    currentAdmin =
-        profile;
+    currentAdmin = profile;
 
 
     if ($("adminName")) {
@@ -366,72 +359,49 @@ async function loadUsers() {
                 <tr>
 
                     <td>
-
                         <strong>
-
                             ${escapeHtml(
                                 u.fullname ||
                                 u.username ||
                                 "Unnamed User"
                             )}
-
                         </strong>
-
                     </td>
 
-
                     <td>
-
                         ${escapeHtml(
                             u.email || "-"
                         )}
-
                     </td>
 
-
                     <td>
-
                         ${escapeHtml(
                             u.country || "-"
                         )}
-
                     </td>
 
-
                     <td>
-
                         ${escapeHtml(
                             u.account_type ||
                             "Standard"
                         )}
-
                     </td>
 
-
                     <td>
-
                         <strong>
-
                             ${formatMoney(
                                 u.balance
                             )}
-
                         </strong>
-
                     </td>
 
-
                     <td>
-
                         ${escapeHtml(
                             u.role || "user"
                         )}
-
                     </td>
 
-
                     <td>
-
                         ${
                             u.created_at
                             ? escapeHtml(
@@ -441,9 +411,7 @@ async function loadUsers() {
                             )
                             : "-"
                         }
-
                     </td>
-
 
                     <td>
 
@@ -645,6 +613,9 @@ async function editUserBalance(userId) {
         );
 
 
+        $("creditForm")?.reset();
+
+
         await Promise.all([
             loadUsers(),
             loadAdminCredits(),
@@ -756,50 +727,35 @@ async function loadAdminCredits() {
             <tr>
 
                 <td>
-
                     ${escapeHtml(
                         userName(
                             r.user_id
                         )
                     )}
-
                 </td>
 
-
                 <td>
-
                     <strong>
-
                         ${formatMoney(
                             r.amount
                         )}
-
                     </strong>
-
                 </td>
 
-
                 <td>
-
                     ${formatMoney(
                         r.balance_after
                     )}
-
                 </td>
 
-
                 <td>
-
                     ${escapeHtml(
                         r.description ||
                         "Admin credit"
                     )}
-
                 </td>
 
-
                 <td>
-
                     ${
                         r.created_at
                         ? escapeHtml(
@@ -809,7 +765,6 @@ async function loadAdminCredits() {
                         )
                         : "-"
                     }
-
                 </td>
 
             </tr>
@@ -870,20 +825,6 @@ function actionButtons(id, type) {
 // ======================================================
 // LOAD PENDING REQUESTS
 // ======================================================
-//
-// IMPORTANT:
-// We intentionally do NOT rely on only one exact
-// capitalization of "pending".
-//
-// This catches:
-//
-// pending
-// Pending
-// PENDING
-//
-// It also selects the transaction type explicitly.
-//
-// ======================================================
 
 async function loadPending(type, tbodyId) {
 
@@ -902,6 +843,148 @@ async function loadPending(type, tbodyId) {
 
     try {
 
+        // ==================================================
+        // PENDING WITHDRAWALS
+        // USE SECURE ADMIN RPC
+        // ==================================================
+
+        if (type === "withdrawal") {
+
+            const {
+                data,
+                error
+            } =
+                await window.supabaseClient
+                .rpc(
+                    "admin_get_pending_withdrawals"
+                );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            const rows =
+                data || [];
+
+
+            console.log(
+                "PENDING WITHDRAWALS:",
+                rows
+            );
+
+
+            if (!rows.length) {
+
+                tbody.innerHTML =
+                    '<tr><td colspan="6">No pending withdrawals.</td></tr>';
+
+                return;
+            }
+
+
+            tbody.innerHTML =
+                rows.map(r => {
+
+                    const name =
+                        userName(
+                            r.user_id
+                        );
+
+
+                    const date =
+                        r.created_at
+                        ? new Date(
+                            r.created_at
+                        ).toLocaleString()
+                        : "-";
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+
+                                <strong>
+                                    ${escapeHtml(name)}
+                                </strong>
+
+                                <div class="small-muted">
+
+                                    ${escapeHtml(
+                                        r.user_id
+                                    )}
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    ${formatMoney(
+                                        r.amount
+                                    )}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                ${escapeHtml(
+                                    r.description ||
+                                    "Withdrawal"
+                                )}
+
+                            </td>
+
+
+                            <td>
+
+                                ${escapeHtml(
+                                    date
+                                )}
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="status-badge">
+                                    Pending
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                ${actionButtons(
+                                    r.id,
+                                    "withdrawal"
+                                )}
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }).join("");
+
+
+            return;
+        }
+
+
+        // ==================================================
+        // OTHER PENDING REQUESTS
+        // ==================================================
+
         const {
             data,
             error
@@ -914,6 +997,10 @@ async function loadPending(type, tbodyId) {
             .eq(
                 "type",
                 type
+            )
+            .eq(
+                "status",
+                "pending"
             )
             .order(
                 "created_at",
@@ -929,20 +1016,8 @@ async function loadPending(type, tbodyId) {
         }
 
 
-        // --------------------------------------------------
-        // FILTER PENDING LOCALLY
-        // --------------------------------------------------
-        //
-        // This is more tolerant of status capitalization
-        // than .eq("status","pending").
-        //
         const rows =
-            (data || []).filter(r =>
-                String(
-                    r.status || ""
-                ).toLowerCase().trim()
-                === "pending"
-            );
+            data || [];
 
 
         if (!rows.length) {
@@ -966,14 +1041,6 @@ async function loadPending(type, tbodyId) {
                                 r.user_id
                             )
                         )}
-
-                        <div class="small-muted">
-
-                            ${escapeHtml(
-                                r.user_id
-                            )}
-
-                        </div>
 
                     </td>
 
@@ -1019,9 +1086,7 @@ async function loadPending(type, tbodyId) {
                     <td>
 
                         <span class="status-badge">
-
                             Pending
-
                         </span>
 
                     </td>
@@ -1044,13 +1109,15 @@ async function loadPending(type, tbodyId) {
     } catch (error) {
 
         console.error(
-            `LOAD ${type.toUpperCase()} PENDING ERROR:`,
+            "LOAD PENDING ERROR:",
             error
         );
 
 
         tbody.innerHTML = `
+
             <tr>
+
                 <td colspan="6">
 
                     Unable to load pending requests.
@@ -1064,7 +1131,9 @@ async function loadPending(type, tbodyId) {
                     </small>
 
                 </td>
+
             </tr>
+
         `;
 
     }
