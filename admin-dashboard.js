@@ -1,6 +1,7 @@
 // ======================================================
 // MARKETRADING - ADMIN DASHBOARD
 // ======================================================
+
 "use strict";
 
 let currentAdmin = null;
@@ -13,7 +14,7 @@ const $ = id => document.getElementById(id);
 // HELPERS
 // ======================================================
 
-function formatMoney(value){
+function formatMoney(value) {
 
     return Number(value || 0).toLocaleString("en-US", {
         style: "currency",
@@ -23,23 +24,23 @@ function formatMoney(value){
 }
 
 
-function escapeHtml(value){
+function escapeHtml(value) {
 
     return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
 
-function showMessage(text,type="success"){
+function showMessage(text, type = "success") {
 
     const box = $("messageBox");
 
-    if(!box){
+    if (!box) {
         console.log(text);
         return;
     }
@@ -55,15 +56,13 @@ function showMessage(text,type="success"){
 
     showMessage.timer =
         setTimeout(() => {
-
             box.style.display = "none";
-
-        },6000);
+        }, 6000);
 
 }
 
 
-function userName(id){
+function userName(id) {
 
     const u =
         users.find(x => x.id === id);
@@ -81,29 +80,12 @@ function userName(id){
 // REQUIRE ADMIN
 // ======================================================
 
-async function requireAdmin(){
+async function requireAdmin() {
 
     const client =
         window.supabaseClient;
 
-    if(!client){
-
-        location.replace(
-            "login.html"
-        );
-
-        return false;
-    }
-
-
-    const {data,error} =
-        await client.auth.getSession();
-
-
-    if(
-        error ||
-        !data?.session
-    ){
+    if (!client) {
 
         location.replace(
             "login.html"
@@ -114,8 +96,28 @@ async function requireAdmin(){
 
 
     const {
-        data:profile,
-        error:pe
+        data,
+        error
+    } =
+        await client.auth.getSession();
+
+
+    if (
+        error ||
+        !data?.session
+    ) {
+
+        location.replace(
+            "login.html"
+        );
+
+        return false;
+    }
+
+
+    const {
+        data: profile,
+        error: profileError
     } =
         await client
         .from("profiles")
@@ -129,11 +131,11 @@ async function requireAdmin(){
         .maybeSingle();
 
 
-    if(pe){
+    if (profileError) {
 
         showMessage(
             "Cannot read your profile: " +
-            pe.message,
+            profileError.message,
             "error"
         );
 
@@ -141,10 +143,10 @@ async function requireAdmin(){
     }
 
 
-    if(
+    if (
         !profile ||
         String(profile.role || "").toLowerCase() !== "admin"
-    ){
+    ) {
 
         location.replace(
             "dashboard.html"
@@ -158,7 +160,7 @@ async function requireAdmin(){
         profile;
 
 
-    if($("adminName")){
+    if ($("adminName")) {
 
         $("adminName").textContent =
             profile.fullname ||
@@ -169,10 +171,10 @@ async function requireAdmin(){
     }
 
 
-    if(
+    if (
         $("adminAvatar") &&
         profile.avatar_url
-    ){
+    ) {
 
         $("adminAvatar").src =
             profile.avatar_url;
@@ -188,7 +190,7 @@ async function requireAdmin(){
 // LOAD USERS
 // ======================================================
 
-async function loadUsers(){
+async function loadUsers() {
 
     const client =
         window.supabaseClient;
@@ -197,7 +199,7 @@ async function loadUsers(){
         $("usersTableBody");
 
 
-    if(tbody){
+    if (tbody) {
 
         tbody.innerHTML =
             '<tr><td colspan="8">Loading users...</td></tr>';
@@ -214,16 +216,18 @@ async function loadUsers(){
         .select("*")
         .order(
             "created_at",
-            {ascending:false}
+            {
+                ascending: false
+            }
         );
 
 
-    if(error){
+    if (error) {
 
         console.error(error);
 
 
-        if(tbody){
+        if (tbody) {
 
             tbody.innerHTML =
                 `<tr>
@@ -266,7 +270,7 @@ async function loadUsers(){
     // TOTAL USERS
     // ==================================================
 
-    if($("totalUsers")){
+    if ($("totalUsers")) {
 
         $("totalUsers").textContent =
             nonAdmins.length;
@@ -278,12 +282,12 @@ async function loadUsers(){
     // TOTAL BALANCE
     // ==================================================
 
-    if($("totalBalance")){
+    if ($("totalBalance")) {
 
         $("totalBalance").textContent =
             formatMoney(
                 nonAdmins.reduce(
-                    (s,u) =>
+                    (s, u) =>
                         s +
                         Number(
                             u.balance || 0
@@ -299,7 +303,7 @@ async function loadUsers(){
     // USER SELECT
     // ==================================================
 
-    if($("userSelect")){
+    if ($("userSelect")) {
 
         $("userSelect").innerHTML =
             '<option value="">Select a user</option>';
@@ -344,9 +348,10 @@ async function loadUsers(){
     // USERS TABLE
     // ==================================================
 
-    if(tbody){
+    if (tbody) {
 
-        tbody.innerHTML = users.length
+        tbody.innerHTML =
+            users.length
 
             ? users.map(u => {
 
@@ -429,13 +434,11 @@ async function loadUsers(){
 
                         ${
                             u.created_at
-
                             ? escapeHtml(
                                 new Date(
                                     u.created_at
                                 ).toLocaleString()
                             )
-
                             : "-"
                         }
 
@@ -492,7 +495,7 @@ async function loadUsers(){
 // EDIT USER BALANCE
 // ======================================================
 
-async function editUserBalance(userId){
+async function editUserBalance(userId) {
 
     const user =
         users.find(
@@ -500,7 +503,7 @@ async function editUserBalance(userId){
         );
 
 
-    if(!user){
+    if (!user) {
 
         return showMessage(
             "User was not found.",
@@ -510,12 +513,11 @@ async function editUserBalance(userId){
     }
 
 
-    // Never allow editing another admin
-    if(
+    if (
         String(
             user.role || ""
         ).toLowerCase() === "admin"
-    ){
+    ) {
 
         return showMessage(
             "Admin balances cannot be edited here.",
@@ -545,25 +547,19 @@ async function editUserBalance(userId){
         );
 
 
-    if(entered === null){
-
+    if (entered === null) {
         return;
-
     }
 
 
     const newBalance =
-        Number(
-            entered
-        );
+        Number(entered);
 
 
-    if(
-        !Number.isFinite(
-            newBalance
-        ) ||
+    if (
+        !Number.isFinite(newBalance) ||
         newBalance < 0
-    ){
+    ) {
 
         return showMessage(
             "Enter a valid balance of zero or greater.",
@@ -573,9 +569,7 @@ async function editUserBalance(userId){
     }
 
 
-    if(
-        newBalance === currentBalance
-    ){
+    if (newBalance === currentBalance) {
 
         return showMessage(
             "The new balance is the same as the current balance.",
@@ -596,18 +590,17 @@ async function editUserBalance(userId){
         : `decrease by ${formatMoney(Math.abs(difference))}`;
 
 
-    if(
+    if (
         !confirm(
             `Change ${name}'s balance from ${formatMoney(currentBalance)} to ${formatMoney(newBalance)}?\n\nThis will ${actionText}.`
         )
-    ){
+    ) {
 
         return;
-
     }
 
 
-    try{
+    try {
 
         showMessage(
             "Updating balance...",
@@ -635,10 +628,8 @@ async function editUserBalance(userId){
             );
 
 
-        if(error){
-
+        if (error) {
             throw error;
-
         }
 
 
@@ -655,17 +646,13 @@ async function editUserBalance(userId){
 
 
         await Promise.all([
-
             loadUsers(),
-
             loadAdminCredits(),
-
             loadPendingAll()
-
         ]);
 
 
-    }catch(error){
+    } catch (error) {
 
         console.error(
             "EDIT BALANCE ERROR:",
@@ -692,16 +679,14 @@ window.editUserBalance =
 // LOAD ADMIN CREDITS
 // ======================================================
 
-async function loadAdminCredits(){
+async function loadAdminCredits() {
 
     const tbody =
         $("transactionsTableBody");
 
 
-    if(!tbody){
-
+    if (!tbody) {
         return;
-
     }
 
 
@@ -712,7 +697,7 @@ async function loadAdminCredits(){
         await window.supabaseClient
         .from("transactions")
         .select(
-            "id,user_id,amount,balance_after,description,type,status,created_at"
+            "id,user_id,amount,balance_after,description,type,status,source,created_at"
         )
         .eq(
             "type",
@@ -720,12 +705,14 @@ async function loadAdminCredits(){
         )
         .order(
             "created_at",
-            {ascending:false}
+            {
+                ascending: false
+            }
         )
         .limit(50);
 
 
-    if(error){
+    if (error) {
 
         tbody.innerHTML =
             `<tr>
@@ -744,12 +731,12 @@ async function loadAdminCredits(){
         data || [];
 
 
-    if($("totalCredits")){
+    if ($("totalCredits")) {
 
         $("totalCredits").textContent =
             formatMoney(
                 rows.reduce(
-                    (s,r) =>
+                    (s, r) =>
                         s +
                         Number(
                             r.amount || 0
@@ -815,13 +802,11 @@ async function loadAdminCredits(){
 
                     ${
                         r.created_at
-
                         ? escapeHtml(
                             new Date(
                                 r.created_at
                             ).toLocaleString()
                         )
-
                         : "-"
                     }
 
@@ -846,10 +831,7 @@ async function loadAdminCredits(){
 // ACTION BUTTONS
 // ======================================================
 
-function actionButtons(
-    id,
-    type
-){
+function actionButtons(id, type) {
 
     return `
 
@@ -888,166 +870,204 @@ function actionButtons(
 // ======================================================
 // LOAD PENDING REQUESTS
 // ======================================================
+//
+// IMPORTANT:
+// We intentionally do NOT rely on only one exact
+// capitalization of "pending".
+//
+// This catches:
+//
+// pending
+// Pending
+// PENDING
+//
+// It also selects the transaction type explicitly.
+//
+// ======================================================
 
-async function loadPending(
-    type,
-    tbodyId
-){
+async function loadPending(type, tbodyId) {
 
     const tbody =
         $(tbodyId);
 
 
-    if(!tbody){
-
+    if (!tbody) {
         return;
-
-    }
-
-
-    const {
-        data,
-        error
-    } =
-        await window.supabaseClient
-        .from("transactions")
-        .select(
-            "id,user_id,amount,description,status,created_at"
-        )
-        .eq(
-            "type",
-            type
-        )
-        .eq(
-            "status",
-            "pending"
-        )
-        .order(
-            "created_at",
-            {ascending:false}
-        )
-        .limit(100);
-
-
-    if(error){
-
-        tbody.innerHTML =
-            `<tr>
-                <td colspan="6">
-                    ${escapeHtml(
-                        error.message
-                    )}
-                </td>
-            </tr>`;
-
-        return;
-
-    }
-
-
-    const rows =
-        data || [];
-
-
-    if(!rows.length){
-
-        tbody.innerHTML =
-            '<tr><td colspan="6">No pending requests.</td></tr>';
-
-        return;
-
     }
 
 
     tbody.innerHTML =
-        rows.map(r => `
+        '<tr><td colspan="6">Loading pending requests...</td></tr>';
 
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await window.supabaseClient
+            .from("transactions")
+            .select(
+                "id,user_id,amount,description,type,status,created_at"
+            )
+            .eq(
+                "type",
+                type
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            )
+            .limit(100);
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        // --------------------------------------------------
+        // FILTER PENDING LOCALLY
+        // --------------------------------------------------
+        //
+        // This is more tolerant of status capitalization
+        // than .eq("status","pending").
+        //
+        const rows =
+            (data || []).filter(r =>
+                String(
+                    r.status || ""
+                ).toLowerCase().trim()
+                === "pending"
+            );
+
+
+        if (!rows.length) {
+
+            tbody.innerHTML =
+                '<tr><td colspan="6">No pending requests.</td></tr>';
+
+            return;
+        }
+
+
+        tbody.innerHTML =
+            rows.map(r => `
+
+                <tr>
+
+                    <td>
+
+                        ${escapeHtml(
+                            userName(
+                                r.user_id
+                            )
+                        )}
+
+                        <div class="small-muted">
+
+                            ${escapeHtml(
+                                r.user_id
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+
+                            ${formatMoney(
+                                r.amount
+                            )}
+
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            r.description ||
+                            "-"
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${
+                            r.created_at
+                            ? escapeHtml(
+                                new Date(
+                                    r.created_at
+                                ).toLocaleString()
+                            )
+                            : "-"
+                        }
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="status-badge">
+
+                            Pending
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${actionButtons(
+                            r.id,
+                            type
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `).join("");
+
+
+    } catch (error) {
+
+        console.error(
+            `LOAD ${type.toUpperCase()} PENDING ERROR:`,
+            error
+        );
+
+
+        tbody.innerHTML = `
             <tr>
+                <td colspan="6">
 
-                <td>
+                    Unable to load pending requests.
 
-                    ${escapeHtml(
-                        userName(
-                            r.user_id
-                        )
-                    )}
+                    <br>
 
-                    <div class="small-muted">
-
+                    <small>
                         ${escapeHtml(
-                            r.user_id
+                            error.message
                         )}
-
-                    </div>
-
-                </td>
-
-
-                <td>
-
-                    <strong>
-
-                        ${formatMoney(
-                            r.amount
-                        )}
-
-                    </strong>
+                    </small>
 
                 </td>
-
-
-                <td>
-
-                    ${escapeHtml(
-                        r.description ||
-                        "-"
-                    )}
-
-                </td>
-
-
-                <td>
-
-                    ${
-                        r.created_at
-
-                        ? escapeHtml(
-                            new Date(
-                                r.created_at
-                            ).toLocaleString()
-                        )
-
-                        : "-"
-                    }
-
-                </td>
-
-
-                <td>
-
-                    <span class="status-badge">
-
-                        ${escapeHtml(
-                            r.status
-                        )}
-
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    ${actionButtons(
-                        r.id,
-                        type
-                    )}
-
-                </td>
-
             </tr>
+        `;
 
-        `).join("");
+    }
 
 }
 
@@ -1056,7 +1076,7 @@ async function loadPending(
 // LOAD ALL PENDING REQUESTS
 // ======================================================
 
-async function loadPendingAll(){
+async function loadPendingAll() {
 
     await Promise.all([
 
@@ -1088,7 +1108,7 @@ async function processRequest(
     transactionId,
     type,
     action
-){
+) {
 
     const verb =
         action === "approve"
@@ -1096,20 +1116,20 @@ async function processRequest(
         : "reject";
 
 
-    if(
+    if (
         !confirm(
             `Are you sure you want to ${verb} this ${type} request?`
         )
-    ){
+    ) {
 
         return;
-
     }
 
 
-    try{
+    try {
 
         const {
+            data,
             error
         } =
             await window.supabaseClient
@@ -1125,11 +1145,15 @@ async function processRequest(
             );
 
 
-        if(error){
-
+        if (error) {
             throw error;
-
         }
+
+
+        console.log(
+            "ADMIN PROCESS RESULT:",
+            data
+        );
 
 
         showMessage(
@@ -1139,16 +1163,13 @@ async function processRequest(
 
 
         await Promise.all([
-
             loadUsers(),
-
             loadAdminCredits(),
-
             loadPendingAll()
-
         ]);
 
-    }catch(e){
+
+    } catch (e) {
 
         console.error(
             "PROCESS REQUEST ERROR:",
@@ -1175,7 +1196,7 @@ window.processRequest =
 // CREDIT VIRTUAL MONEY
 // ======================================================
 
-async function creditVirtualMoney(event){
+async function creditVirtualMoney(event) {
 
     event.preventDefault();
 
@@ -1195,7 +1216,7 @@ async function creditVirtualMoney(event){
         "Admin credit";
 
 
-    if(!userId){
+    if (!userId) {
 
         return showMessage(
             "Please select a user.",
@@ -1205,10 +1226,10 @@ async function creditVirtualMoney(event){
     }
 
 
-    if(
+    if (
         !Number.isFinite(amount) ||
         amount <= 0
-    ){
+    ) {
 
         return showMessage(
             "Enter a valid amount greater than zero.",
@@ -1224,7 +1245,7 @@ async function creditVirtualMoney(event){
         );
 
 
-    if(!user){
+    if (!user) {
 
         return showMessage(
             "Selected user was not found.",
@@ -1241,14 +1262,13 @@ async function creditVirtualMoney(event){
         "this user";
 
 
-    if(
+    if (
         !confirm(
             `Credit ${formatMoney(amount)} to ${name}?`
         )
-    ){
+    ) {
 
         return;
-
     }
 
 
@@ -1256,7 +1276,7 @@ async function creditVirtualMoney(event){
         $("creditBtn");
 
 
-    if(btn){
+    if (btn) {
 
         btn.disabled =
             true;
@@ -1267,7 +1287,7 @@ async function creditVirtualMoney(event){
     }
 
 
-    try{
+    try {
 
         const {
             error
@@ -1288,10 +1308,8 @@ async function creditVirtualMoney(event){
             );
 
 
-        if(error){
-
+        if (error) {
             throw error;
-
         }
 
 
@@ -1305,14 +1323,13 @@ async function creditVirtualMoney(event){
 
 
         await Promise.all([
-
             loadUsers(),
-
-            loadAdminCredits()
-
+            loadAdminCredits(),
+            loadPendingAll()
         ]);
 
-    }catch(e){
+
+    } catch (e) {
 
         console.error(e);
 
@@ -1323,9 +1340,9 @@ async function creditVirtualMoney(event){
             "error"
         );
 
-    }finally{
+    } finally {
 
-        if(btn){
+        if (btn) {
 
             btn.disabled =
                 false;
@@ -1344,15 +1361,15 @@ async function creditVirtualMoney(event){
 // LOGOUT
 // ======================================================
 
-async function logout(){
+async function logout() {
 
-    try{
+    try {
 
         await window.supabaseClient
             .auth
             .signOut();
 
-    }finally{
+    } finally {
 
         localStorage.removeItem(
             "user_id"
@@ -1372,7 +1389,7 @@ async function logout(){
 // MOBILE ADMIN MENU
 // ======================================================
 
-function setupMobileAdminMenu(){
+function setupMobileAdminMenu() {
 
     const sidebar =
         $("adminSidebar");
@@ -1387,18 +1404,17 @@ function setupMobileAdminMenu(){
         $("mobileOverlay");
 
 
-    if(
+    if (
         !sidebar ||
         !menuBtn ||
         !overlay
-    ){
+    ) {
 
         return;
-
     }
 
 
-    function openMenu(){
+    function openMenu() {
 
         sidebar.classList.add(
             "mobile-open"
@@ -1423,7 +1439,7 @@ function setupMobileAdminMenu(){
     }
 
 
-    function closeMenu(){
+    function closeMenu() {
 
         sidebar.classList.remove(
             "mobile-open"
@@ -1454,7 +1470,7 @@ function setupMobileAdminMenu(){
     );
 
 
-    if(closeBtn){
+    if (closeBtn) {
 
         closeBtn.addEventListener(
             "click",
@@ -1480,9 +1496,9 @@ function setupMobileAdminMenu(){
                 "click",
                 () => {
 
-                    if(
+                    if (
                         window.innerWidth <= 768
-                    ){
+                    ) {
 
                         closeMenu();
 
@@ -1498,9 +1514,9 @@ function setupMobileAdminMenu(){
         "resize",
         () => {
 
-            if(
+            if (
                 window.innerWidth > 768
-            ){
+            ) {
 
                 closeMenu();
 
@@ -1520,15 +1536,20 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
+        // ----------------------------------------------
+        // CREDIT FORM
+        // ----------------------------------------------
 
-        // Credit form
         $("creditForm")?.addEventListener(
             "submit",
             creditVirtualMoney
         );
 
 
-        // Refresh
+        // ----------------------------------------------
+        // REFRESH
+        // ----------------------------------------------
+
         $("refreshUsersBtn")?.addEventListener(
             "click",
             async () => {
@@ -1543,23 +1564,32 @@ document.addEventListener(
         );
 
 
-        // Logout
+        // ----------------------------------------------
+        // LOGOUT
+        // ----------------------------------------------
+
         $("logoutBtn")?.addEventListener(
             "click",
             logout
         );
 
 
-        // Mobile menu
+        // ----------------------------------------------
+        // MOBILE MENU
+        // ----------------------------------------------
+
         setupMobileAdminMenu();
 
 
-        // Admin authentication
-        try{
+        // ----------------------------------------------
+        // ADMIN AUTHENTICATION
+        // ----------------------------------------------
 
-            if(
+        try {
+
+            if (
                 await requireAdmin()
-            ){
+            ) {
 
                 await loadUsers();
 
@@ -1569,7 +1599,7 @@ document.addEventListener(
 
             }
 
-        }catch(e){
+        } catch (e) {
 
             console.error(e);
 
