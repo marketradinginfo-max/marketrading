@@ -256,9 +256,11 @@ async function loadTransactions(userId) {
         .from("transactions")
         .select("*")
         .eq("user_id", userId)
+        .neq("type", "admin_adjustment")
         .order("created_at", {
             ascending: false
-        });
+        })
+        .limit(10);
 
 
     if (error) {
@@ -284,7 +286,17 @@ async function loadTransactions(userId) {
 
 
     const allTransactions =
-        transactions || [];
+        (transactions || []).filter(t => {
+
+        const type =
+            String(t.type || "")
+                .toLowerCase()
+                .trim();
+
+                return type
+            
+                
+            });
 
 
     // ==================================================
