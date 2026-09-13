@@ -1240,10 +1240,13 @@ async function processRequest(
 
     } catch (e) {
 
-        console.error(
-            "PROCESS REQUEST ERROR:",
-            e
-        );
+        console.error("========== PROCESS REQUEST ERROR ==========");
+console.error("Full error:", e);
+console.error("Error message:", e?.message);
+console.error("Error code:", e?.code);
+console.error("Error details:", e?.details);
+console.error("Error hint:", e?.hint);
+console.error("===========================================");
 
 
         showMessage(

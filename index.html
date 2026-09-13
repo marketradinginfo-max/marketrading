@@ -54,8 +54,8 @@
 
         .nav-glass {
             background: rgba(7,17,31,.90);
-            backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--line);
         }
 
@@ -134,6 +134,12 @@
 
             background-size: 52px 52px;
 
+            -webkit-mask-image:
+                linear-gradient(
+                    to bottom,
+                    black,
+                    transparent 90%
+                );
             mask-image:
                 linear-gradient(
                     to bottom,
@@ -371,6 +377,17 @@
             height: calc(100% + 30px);
             background: currentColor;
         }
+
+        /* Candle positions and animations */
+        .candle-1 { left: 8%; height: 55px; animation-delay: .1s; }
+        .candle-2 { left: 15%; height: 32px; animation-delay: .4s; }
+        .candle-3 { left: 23%; height: 72px; animation-delay: .7s; }
+        .candle-4 { left: 34%; height: 46px; animation-delay: 1s; }
+        .candle-5 { left: 44%; height: 38px; animation-delay: 1.3s; }
+        .candle-6 { left: 54%; height: 84px; animation-delay: 1.6s; }
+        .candle-7 { left: 67%; height: 66px; animation-delay: 1.9s; }
+        .candle-8 { left: 76%; height: 42px; animation-delay: 2.2s; }
+        .candle-9 { left: 87%; height: 92px; animation-delay: 2.5s; }
 
         .candle.green {
             color: #22c55e;
@@ -790,10 +807,6 @@
         ========================================== */
 
         @media(max-width: 767px) {
-
-            .hero {
-                min-height: auto;
-            }
 
             .trading-card {
                 transform: none;
@@ -1408,50 +1421,23 @@
                         </svg>
 
 
-                        <div
-                            class="candle green"
-                            style="left:8%;height:55px;animation-delay:.1s"
-                        ></div>
+                        <div class="candle green candle-1"></div>
 
-                        <div
-                            class="candle red"
-                            style="left:15%;height:32px;animation-delay:.4s"
-                        ></div>
+                        <div class="candle red candle-2"></div>
 
-                        <div
-                            class="candle green"
-                            style="left:23%;height:72px;animation-delay:.7s"
-                        ></div>
+                        <div class="candle green candle-3"></div>
 
-                        <div
-                            class="candle green"
-                            style="left:34%;height:46px;animation-delay:1s"
-                        ></div>
+                        <div class="candle green candle-4"></div>
 
-                        <div
-                            class="candle red"
-                            style="left:44%;height:38px;animation-delay:1.3s"
-                        ></div>
+                        <div class="candle red candle-5"></div>
 
-                        <div
-                            class="candle green"
-                            style="left:54%;height:84px;animation-delay:1.6s"
-                        ></div>
+                        <div class="candle green candle-6"></div>
 
-                        <div
-                            class="candle green"
-                            style="left:67%;height:66px;animation-delay:1.9s"
-                        ></div>
+                        <div class="candle green candle-7"></div>
 
-                        <div
-                            class="candle red"
-                            style="left:76%;height:42px;animation-delay:2.2s"
-                        ></div>
+                        <div class="candle red candle-8"></div>
 
-                        <div
-                            class="candle green"
-                            style="left:87%;height:92px;animation-delay:2.5s"
-                        ></div>
+                        <div class="candle green candle-9"></div>
 
                     </div>
 
