@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+  <title>Card Deposit | Marketrading</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .deposit-box {
+      background: #172238;
+      padding: 30px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h2 { text-align: center; }
+
+    label {
+      display: block;
+      margin: 20px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #42506a;
+      background: #0b1220;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .note {
+      color: #aab7ca;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    a { color: #93c5fd; }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="deposit-box">
+    <h2>Card Deposit</h2>
+
+    <p class="note">
+      Secure card payments powered by Pesapal.
+    </p>
+
+    <form id="depositForm">
+      <label for="amount">Deposit Amount (USD)</label>
+
+      <input
+        type="number"
+        id="amount"
+        min="1"
+        step="0.01"
+        placeholder="Enter amount"
+        required
+      >
+
+      <button type="submit" id="payBtn">
+        Continue to Payment
+      </button>
+    </form>
+
+    <p id="message" role="status"></p>
+
+    <p class="note">
+      You will be redirected to Pesapal
+      to complete your payment securely.
+    </p>
+
+    <p class="note">
+      <a href="deposit.html">Back to Deposit Methods</a>
+    </p>
+  </div>
+
+  <script src="card-deposit.js"></script>
+</body>
+</html>
