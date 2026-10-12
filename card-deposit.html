@@ -117,6 +117,26 @@
     </p>
   </div>
 
-  <script src="card-deposit.js"></script>
+  
+<!-- Supabase JavaScript library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Initialize Supabase -->
+<script>
+  const SUPABASE_URL =
+    "https://zuvthowcxloiqlgrcvqk.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+
+  window.supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+</script>
+
+<!-- Card payment logic -->
+<script src="card-deposit.js"></script>
+
 </body>
 </html>
