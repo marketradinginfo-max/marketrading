@@ -1,11 +1,11 @@
-
+(() => {
 
 const form = document.getElementById("depositForm");
 const message = document.getElementById("message");
 const amountInput = document.getElementById("amount");
 
 // Your existing Supabase project
-const SUPABASE_URL =
+const CARD_SUPABASE_URL =
   "https://zuvthowcxloiqlgrcvqk.supabase.co";
 
 // Must match the deployed Edge Function name
@@ -47,7 +47,7 @@ form.addEventListener("submit", async (event) => {
     }
 
     const response = await fetch(
-      `${SUPABASE_URL}/functions/v1/${FUNCTION_NAME}`,
+      `${CARD_SUPABASE_URL}/functions/v1/${FUNCTION_NAME}`,
       {
         method: "POST",
         headers: {
@@ -94,4 +94,6 @@ form.addEventListener("submit", async (event) => {
     if (button) button.disabled = false;
   }
 });
+
+})();
 
