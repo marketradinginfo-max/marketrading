@@ -1,9 +1,10 @@
+
 /* =========================================================
-   MARKETHRADING ADMIN DASHBOARD
-   Professional Financial Dashboard UI
+   MARKETRADING ADMIN DASHBOARD
+   COMPLETE RESPONSIVE CSS
    ========================================================= */
 
-   * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -29,17 +30,35 @@
 
 html {
     scroll-behavior: smooth;
+    max-width: 100%;
 }
 
 body {
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Helvetica, Arial, sans-serif;
-
+    font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
+button,
+input,
+select {
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus-visible,
+.sidebar-menu li:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
 
 /* =========================================================
    SIDEBAR
@@ -49,16 +68,12 @@ body {
     position: fixed;
     left: 0;
     top: 0;
-
     width: 250px;
     height: 100vh;
-
+    height: 100dvh;
     background: var(--sidebar);
-
     padding: 26px 16px;
-
-    z-index: 1000;
-
+    z-index: 1100;
     overflow-y: auto;
 }
 
@@ -66,12 +81,9 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-
     color: #ffffff;
-
     font-size: 21px;
     font-weight: 800;
-
     padding: 0 12px 30px;
 }
 
@@ -81,12 +93,9 @@ body {
 
 .admin-label {
     color: #64748b;
-
     font-size: 11px;
     font-weight: 700;
-
     letter-spacing: 1.5px;
-
     padding: 0 12px 12px;
 }
 
@@ -98,28 +107,20 @@ body {
     display: flex;
     align-items: center;
     gap: 14px;
-
     padding: 13px 14px;
-
     margin-bottom: 5px;
-
     border-radius: 10px;
-
     color: var(--sidebar-text);
-
     font-size: 14px;
     font-weight: 500;
-
     cursor: pointer;
-
-    transition: 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease;
+    user-select: none;
 }
 
 .sidebar-menu li i {
     width: 20px;
-
     text-align: center;
-
     font-size: 16px;
 }
 
@@ -131,6 +132,15 @@ body {
 .sidebar-menu li.active {
     background: var(--primary);
     color: #ffffff;
+    font-weight: 700;
+}
+
+.sidebar-menu li.active i {
+    color: #ffffff;
+}
+
+.sidebar-menu li[data-admin-nav] {
+    cursor: pointer;
 }
 
 .logout-item {
@@ -143,19 +153,16 @@ body {
     color: #fecaca !important;
 }
 
-
 /* =========================================================
-   MAIN
+   MAIN CONTENT
    ========================================================= */
 
 .main {
     margin-left: 250px;
-
     padding: 30px;
-
     min-height: 100vh;
+    min-width: 0;
 }
-
 
 /* =========================================================
    TOPBAR
@@ -163,76 +170,54 @@ body {
 
 .topbar {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     margin-bottom: 28px;
 }
 
 .topbar h1 {
     font-size: 28px;
-
     font-weight: 750;
-
     letter-spacing: -0.5px;
-
     color: var(--text);
 }
 
 .topbar > div:first-child p {
     margin-top: 6px;
-
     color: var(--muted);
-
     font-size: 14px;
 }
 
 .profile {
     display: flex;
-
     align-items: center;
-
     gap: 12px;
-
     background: var(--card);
-
     border: 1px solid var(--border);
-
     padding: 8px 13px 8px 8px;
-
     border-radius: 12px;
-
     box-shadow: var(--shadow);
 }
 
 .profile img {
     width: 42px;
     height: 42px;
-
     border-radius: 50%;
-
     object-fit: cover;
-
     border: 2px solid #e5e7eb;
 }
 
 .profile h4 {
     font-size: 14px;
-
     font-weight: 700;
 }
 
 .profile p {
     margin-top: 3px;
-
     color: var(--muted);
-
     font-size: 12px;
 }
-
 
 /* =========================================================
    MESSAGE BOX
@@ -240,38 +225,52 @@ body {
 
 .message-box {
     display: none;
-
     padding: 14px 16px;
-
     margin-bottom: 20px;
-
     border-radius: 10px;
-
     font-size: 14px;
-
     font-weight: 600;
 }
 
 .message-box.success {
     display: block;
-
     background: #ecfdf3;
-
     color: #15803d;
-
     border: 1px solid #bbf7d0;
 }
 
 .message-box.error {
     display: block;
-
     background: #fef2f2;
-
     color: #b91c1c;
-
     border: 1px solid #fecaca;
 }
 
+/* =========================================================
+   ADMIN SECTION NAVIGATION
+   ========================================================= */
+
+/* Required for switching dashboard sections */
+
+[data-admin-section][hidden] {
+    display: none !important;
+}
+
+[data-admin-section] {
+    animation: sectionFadeIn 0.2s ease;
+}
+
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 /* =========================================================
    STATISTICS
@@ -279,79 +278,56 @@ body {
 
 .stats {
     display: grid;
-
-    grid-template-columns: repeat(4, 1fr);
-
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
-
     margin-bottom: 25px;
 }
 
 .box {
     display: flex;
-
     align-items: center;
-
     gap: 15px;
-
+    min-width: 0;
     background: var(--card);
-
     border: 1px solid var(--border);
-
     border-radius: var(--radius);
-
     padding: 20px;
-
     box-shadow: var(--shadow);
-
     transition: transform 0.2s ease,
-                box-shadow 0.2s ease;
+        box-shadow 0.2s ease;
 }
 
 .box:hover {
     transform: translateY(-2px);
-
     box-shadow: 0 12px 35px rgba(15, 23, 42, 0.09);
 }
 
 .stat-icon {
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     width: 48px;
     height: 48px;
-
     flex-shrink: 0;
-
     border-radius: 12px;
-
     background: #eff6ff;
-
     color: var(--primary);
-
     font-size: 19px;
 }
 
 .box h3 {
     font-size: 21px;
-
     font-weight: 750;
-
     letter-spacing: -0.4px;
+    overflow-wrap: anywhere;
 }
 
 .box p {
     margin-top: 4px;
-
     color: var(--muted);
-
     font-size: 12px;
-
     font-weight: 500;
 }
-
 
 /* =========================================================
    SECTIONS
@@ -359,60 +335,43 @@ body {
 
 .section {
     background: var(--card);
-
     border: 1px solid var(--border);
-
     border-radius: var(--radius);
-
     box-shadow: var(--shadow);
-
     margin-bottom: 25px;
-
     overflow: hidden;
 }
 
 .section-header {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     padding: 22px 24px;
-
     border-bottom: 1px solid var(--border);
 }
 
 .section-header h2 {
     display: flex;
-
     align-items: center;
-
     gap: 9px;
-
     font-size: 17px;
-
     font-weight: 750;
 }
 
 .section-header h2 i {
     color: var(--primary);
-
     font-size: 16px;
 }
 
 .section-header p {
     margin-top: 5px;
-
     color: var(--muted);
-
     font-size: 12px;
 }
 
-
 /* =========================================================
-   CREDIT FORM
+   CREDIT VIRTUAL MONEY FORM
    ========================================================= */
 
 .credit-section {
@@ -425,56 +384,37 @@ body {
 
 .form-grid {
     display: grid;
-
-    grid-template-columns:
-        1.5fr
-        1fr
-        1.5fr
-        auto;
-
+    grid-template-columns: 1.5fr 1fr 1.5fr auto;
     align-items: end;
-
     gap: 16px;
 }
 
 .form-group {
     display: flex;
-
     flex-direction: column;
-
     gap: 7px;
+    min-width: 0;
 }
 
 .form-group label {
     color: #475569;
-
     font-size: 12px;
-
     font-weight: 700;
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
-
     height: 46px;
-
     padding: 0 13px;
-
     background: #ffffff;
-
     color: var(--text);
-
     border: 1px solid #dfe3ea;
-
     border-radius: 9px;
-
     outline: none;
-
     font-size: 13px;
-
     transition: border-color 0.2s ease,
-                box-shadow 0.2s ease;
+        box-shadow 0.2s ease;
 }
 
 .form-group input::placeholder {
@@ -484,7 +424,6 @@ body {
 .form-group input:focus,
 .form-group select:focus {
     border-color: var(--primary);
-
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
@@ -494,105 +433,106 @@ body {
 
 .credit-btn {
     height: 46px;
-
     padding: 0 18px;
-
     border: none;
-
     border-radius: 9px;
-
     background: var(--primary);
-
     color: #ffffff;
-
     font-size: 13px;
-
     font-weight: 700;
-
+    white-space: nowrap;
     cursor: pointer;
-
-    transition: 0.2s ease;
+    transition: background 0.2s ease,
+        transform 0.2s ease;
 }
 
 .credit-btn:hover {
     background: var(--primary-dark);
-
     transform: translateY(-1px);
 }
 
 .credit-btn:disabled {
     opacity: 0.65;
-
     cursor: not-allowed;
-
     transform: none;
 }
 
-
 /* =========================================================
-   BUTTONS
+   REFRESH BUTTON
    ========================================================= */
 
 .refresh-btn {
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 8px;
-
     height: 38px;
-
     padding: 0 13px;
-
     background: #ffffff;
-
     color: #475569;
-
     border: 1px solid var(--border);
-
     border-radius: 8px;
-
     font-size: 12px;
-
     font-weight: 700;
-
     cursor: pointer;
-
-    transition: 0.2s ease;
+    transition: background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .refresh-btn:hover {
     border-color: #cbd5e1;
-
     background: #f8fafc;
-
     color: var(--text);
 }
 
 .refresh-btn:disabled {
     opacity: 0.6;
-
     cursor: not-allowed;
 }
 
+/* =========================================================
+   EDIT BALANCE BUTTON
+   ========================================================= */
+
+.edit-balance-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 12px;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.edit-balance-btn:hover {
+    background: #dbeafe;
+}
+
+.edit-balance-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 /* =========================================================
-   TABLE
+   TABLES
    ========================================================= */
 
 .table-wrapper {
     width: 100%;
-
+    max-width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
     width: 100%;
-
     border-collapse: collapse;
-
     min-width: 760px;
 }
 
@@ -602,33 +542,21 @@ thead {
 
 th {
     padding: 13px 20px;
-
     text-align: left;
-
     color: #64748b;
-
     font-size: 11px;
-
     font-weight: 750;
-
     text-transform: uppercase;
-
     letter-spacing: 0.5px;
-
     white-space: nowrap;
-
     border-bottom: 1px solid var(--border);
 }
 
 td {
     padding: 15px 20px;
-
     color: #334155;
-
     font-size: 13px;
-
     border-bottom: 1px solid #f0f2f5;
-
     white-space: nowrap;
 }
 
@@ -646,18 +574,20 @@ tbody tr:last-child td {
 
 td strong {
     color: var(--text);
-
     font-weight: 700;
 }
 
 .loading {
     text-align: center;
-
     color: var(--muted);
-
     padding: 35px !important;
 }
 
+.small-muted {
+    color: #94a3b8;
+    font-size: 12px;
+    margin-top: 4px;
+}
 
 /* =========================================================
    ROLE BADGES
@@ -665,69 +595,155 @@ td strong {
 
 .role-badge {
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
-
     padding: 5px 9px;
-
     border-radius: 999px;
-
     font-size: 10px;
-
     font-weight: 750;
-
     text-transform: uppercase;
-
     letter-spacing: 0.3px;
 }
 
 .admin-role {
     background: #ede9fe;
-
     color: #6d28d9;
 }
 
 .user-role {
     background: #ecfdf5;
-
     color: #15803d;
 }
 
-
 /* =========================================================
-   STATUS STYLES
+   TRANSACTION STATUS BADGES
    ========================================================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-approved,
+.status-completed,
+.status-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-rejected,
+.status-failed,
+.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
 
 .active-status {
     color: var(--success);
-
     font-weight: 700;
 }
 
 .pending {
     color: var(--warning);
-
     font-weight: 700;
 }
 
+/* =========================================================
+   APPROVE / REJECT BUTTONS
+   ========================================================= */
+
+.admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 35px;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-actions button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.admin-actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.approve-btn {
+    background: #22c55e;
+    color: #06110a;
+}
+
+.reject-btn {
+    background: #ef4444;
+    color: #ffffff;
+}
 
 /* =========================================================
-   SCROLLBAR
+   SETTINGS SECTION
+   ========================================================= */
+
+.admin-settings-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.admin-settings-content p {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.admin-settings-content strong {
+    color: var(--text);
+    font-weight: 700;
+}
+
+/* =========================================================
+   SCROLLBARS
    ========================================================= */
 
 .sidebar::-webkit-scrollbar,
 .table-wrapper::-webkit-scrollbar {
     width: 6px;
-
     height: 6px;
 }
 
 .sidebar::-webkit-scrollbar-thumb,
 .table-wrapper::-webkit-scrollbar-thumb {
     background: #475569;
-
     border-radius: 10px;
 }
 
@@ -736,15 +752,25 @@ td strong {
     background: transparent;
 }
 
+/* =========================================================
+   MOBILE MENU DEFAULTS
+   ========================================================= */
+
+.mobile-menu-btn,
+.mobile-close-btn,
+.mobile-overlay,
+.table-scroll-hint {
+    display: none;
+}
 
 /* =========================================================
-   RESPONSIVE — TABLET
+   RESPONSIVE - TABLET
    ========================================================= */
 
 @media (max-width: 1100px) {
 
     .stats {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .form-grid {
@@ -760,174 +786,21 @@ td strong {
     }
 }
 
-
 /* =========================================================
-   RESPONSIVE — MOBILE
+   RESPONSIVE - MOBILE
    ========================================================= */
-
-@media (max-width: 768px) {
-
-    .sidebar {
-        position: relative;
-
-        width: 100%;
-
-        height: auto;
-
-        padding: 18px;
-    }
-
-    .brand {
-        padding-bottom: 18px;
-    }
-
-    .admin-label {
-        display: none;
-    }
-
-    .sidebar-menu {
-        display: flex;
-
-        gap: 7px;
-
-        overflow-x: auto;
-
-        padding-bottom: 3px;
-    }
-
-    .sidebar-menu li {
-        flex: 0 0 auto;
-
-        margin: 0;
-
-        padding: 10px 13px;
-    }
-
-    .sidebar-menu li span {
-        display: none;
-    }
-
-    .sidebar-menu li i {
-        margin: 0;
-    }
-
-    .logout-item {
-        margin-top: 0 !important;
-    }
-
-    .main {
-        margin-left: 0;
-
-        padding: 20px 15px;
-    }
-
-    .topbar {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-    .topbar h1 {
-        font-size: 23px;
-    }
-
-    .profile {
-        width: 100%;
-    }
-
-    .stats {
-        grid-template-columns: 1fr;
-    }
-
-    .section-header {
-        align-items: flex-start;
-
-        flex-direction: column;
-
-        padding: 18px;
-    }
-
-    #creditForm {
-        padding: 18px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .button-group {
-        width: 100%;
-    }
-
-    .credit-btn {
-        width: 100%;
-    }
-
-    table {
-        min-width: 700px;
-    }
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 430px) {
-
-    .main {
-        padding: 16px 11px;
-    }
-
-    .topbar h1 {
-        font-size: 21px;
-    }
-
-    .box {
-        padding: 16px;
-    }
-
-    .section-header h2 {
-        font-size: 15px;
-    }
-
-    .profile {
-        padding: 7px 10px 7px 7px;
-    }
-
-    .profile img {
-        width: 38px;
-        height: 38px;
-    }
-}
-
-
-
-/* =========================================================
-   MOBILE-FIRST RESPONSIVE OVERRIDES
-   ========================================================= */
-
-html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-button, input, select {
-    -webkit-tap-highlight-color: transparent;
-}
-
-.mobile-menu-btn,
-.mobile-close-btn,
-.mobile-overlay,
-.table-scroll-hint {
-    display: none;
-}
 
 @media (max-width: 768px) {
 
     body {
         padding-bottom: env(safe-area-inset-bottom);
     }
+
+    body.menu-open {
+        overflow: hidden;
+    }
+
+    /* MOBILE MENU BUTTON */
 
     .mobile-menu-btn {
         display: flex;
@@ -938,15 +811,17 @@ button, input, select {
         left: 12px;
         width: 46px;
         height: 46px;
-        border: 1px solid rgba(255,255,255,.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 12px;
         background: #111827;
-        color: #fff;
-        box-shadow: 0 10px 30px rgba(15,23,42,.22);
+        color: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22);
         z-index: 1200;
         cursor: pointer;
         font-size: 18px;
     }
+
+    /* MOBILE CLOSE BUTTON */
 
     .mobile-close-btn {
         display: flex;
@@ -955,18 +830,20 @@ button, input, select {
         margin-left: auto;
         width: 40px;
         height: 40px;
-        border: 1px solid rgba(255,255,255,.10);
+        border: 1px solid rgba(255, 255, 255, 0.10);
         border-radius: 10px;
-        background: rgba(255,255,255,.06);
-        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
         cursor: pointer;
         font-size: 18px;
     }
 
+    /* MOBILE OVERLAY */
+
     .mobile-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(2,6,23,.55);
+        background: rgba(2, 6, 23, 0.55);
         backdrop-filter: blur(2px);
         z-index: 1090;
     }
@@ -975,16 +852,19 @@ button, input, select {
         display: block;
     }
 
+    /* MOBILE SIDEBAR */
+
     .sidebar {
-        position: fixed !important;
+        position: fixed;
         top: 0;
         left: 0;
         width: min(285px, 86vw);
+        height: 100vh;
         height: 100dvh;
         padding: 20px 14px;
         transform: translateX(-105%);
-        transition: transform .25s ease;
-        box-shadow: 18px 0 45px rgba(2,6,23,.25);
+        transition: transform 0.25s ease;
+        box-shadow: 18px 0 45px rgba(2, 6, 23, 0.25);
         overflow-y: auto;
         z-index: 1100;
     }
@@ -1026,16 +906,22 @@ button, input, select {
         margin-top: 24px !important;
     }
 
+    /* MAIN CONTENT */
+
     .main {
         width: 100%;
         margin-left: 0;
         padding: 76px 12px 24px;
     }
 
+    /* TOPBAR */
+
     .topbar {
         width: 100%;
         margin-bottom: 18px;
         gap: 14px;
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .topbar > div:first-child {
@@ -1056,6 +942,8 @@ button, input, select {
         width: 100%;
         min-height: 58px;
     }
+
+    /* STATISTICS */
 
     .stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1079,15 +967,15 @@ button, input, select {
 
     .box h3 {
         font-size: clamp(16px, 4.5vw, 20px);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        overflow-wrap: anywhere;
     }
 
     .box p {
         font-size: 10px;
         line-height: 1.25;
     }
+
+    /* SECTIONS */
 
     .section {
         margin-bottom: 16px;
@@ -1097,12 +985,16 @@ button, input, select {
     .section-header {
         gap: 12px;
         padding: 16px;
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .section-header h2 {
         font-size: 15px;
         line-height: 1.3;
     }
+
+    /* CREDIT FORM */
 
     #creditForm {
         padding: 16px;
@@ -1126,11 +1018,15 @@ button, input, select {
         width: 100%;
     }
 
+    /* REFRESH BUTTON */
+
     .refresh-btn {
         width: 100%;
         min-height: 44px;
         height: 44px;
     }
+
+    /* TABLE SCROLL HINT */
 
     .table-scroll-hint {
         display: flex;
@@ -1143,6 +1039,8 @@ button, input, select {
         font-size: 11px;
         font-weight: 600;
     }
+
+    /* TABLES */
 
     .table-wrapper {
         max-width: 100%;
@@ -1168,6 +1066,8 @@ button, input, select {
         font-size: 12px;
     }
 
+    /* TRANSACTION BUTTONS */
+
     .admin-actions {
         flex-wrap: nowrap;
     }
@@ -1175,12 +1075,27 @@ button, input, select {
     .admin-actions button {
         min-height: 42px;
     }
+
+    /* SETTINGS */
+
+    .admin-settings-content {
+        padding: 16px;
+    }
 }
 
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
 @media (max-width: 430px) {
+
     .main {
         padding-left: 10px;
         padding-right: 10px;
+    }
+
+    .topbar h1 {
+        font-size: 21px;
     }
 
     .stats {
@@ -1207,12 +1122,30 @@ button, input, select {
         font-size: 9px;
     }
 
+    .section-header h2 {
+        font-size: 15px;
+    }
+
+    .profile {
+        padding: 7px 10px 7px 7px;
+    }
+
+    .profile img {
+        width: 38px;
+        height: 38px;
+    }
+
     table {
         min-width: 720px;
     }
 }
 
+/* =========================================================
+   EXTRA SMALL MOBILE
+   ========================================================= */
+
 @media (max-width: 350px) {
+
     .stats {
         grid-template-columns: 1fr;
     }
@@ -1223,9 +1156,21 @@ button, input, select {
     }
 }
 
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        transition-duration: .01ms !important;
-        animation-duration: .01ms !important;
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
+
+/* =========================================================
+   END OF ADMIN DASHBOARD CSS
+   ========================================================= */
